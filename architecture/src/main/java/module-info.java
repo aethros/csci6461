@@ -8,4 +8,7 @@ module edu.gwu.seas.csci.architecture6461 {
     
     opens edu.gwu.seas.csci.architecture6461.controllers to javafx.fxml;
     exports edu.gwu.seas.csci.architecture6461.controllers;
+    
+    opens edu.gwu.seas.csci.architecture6461.views to javafx.fxml;
+    exports edu.gwu.seas.csci.architecture6461.views;
 }

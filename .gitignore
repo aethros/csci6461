@@ -28,6 +28,7 @@ replay_pid*
 
 # VSCode
 .vscode
+.idea
 
 # MacOS artifacts
 .DS_Store

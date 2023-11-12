@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+
+<fx:root type="javafx.scene.layout.Pane" maxHeight="-Infinity" maxWidth="-Infinity"
+    minHeight="-Infinity" minWidth="-Infinity"
+    prefHeight="104.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="edu.gwu.seas.csci.architecture6461.controllers.RegisterController">
+    <children>
+        <GridPane alignment="CENTER" prefHeight="104.0" prefWidth="600.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            </rowConstraints>
+            <children>
+                <Label GridPane.columnIndex="0" prefHeight="62.0" prefWidth="31.0" text="GPR">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Label>
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="1" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="2" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="3" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="4" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="5" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="6" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="7" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="8" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="9" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="10" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="11" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="12" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="13" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="14" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="15" />
+                <Rectangle fill="DODGERBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                    width="28.0" GridPane.columnIndex="16" />
+                <Button fx:id="secondaryButton" mnemonicParsing="false" text="LD"
+                    GridPane.columnIndex="17" onAction="#switchToPrimary">
+                    <font>
+                        <Font size="12.0" />
+                    </font>
+                </Button>
+            </children>
+        </GridPane>
+    </children>
+</fx:root>

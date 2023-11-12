@@ -3,7 +3,7 @@ package edu.gwu.seas.csci.architecture6461;
 import java.io.IOException;
 
 import edu.gwu.seas.csci.architecture6461.managers.ProgramManager;
-import edu.gwu.seas.csci.architecture6461.views.PrimaryView;
+import edu.gwu.seas.csci.architecture6461.views.ApplicationView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -34,6 +34,6 @@ public final class App extends Application {
 
     private static void initApp() throws IOException {
         manager = ProgramManager.getInstance();
-        appScene = new Scene(new PrimaryView(), 640, 480);
+        appScene = new Scene(new ApplicationView(), 1280, 960);
     }
 }

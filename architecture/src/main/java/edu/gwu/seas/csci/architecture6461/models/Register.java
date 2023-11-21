@@ -1,6 +1,10 @@
 package edu.gwu.seas.csci.architecture6461.models;
 
+import lombok.val;
+
 public class Register {
+    public static final int MAX_SIZE = 16;
+
     private int value;
     private int size;
 
@@ -9,19 +13,42 @@ public class Register {
         this.value = 0;
     }
 
+    /**
+     * Sets the value stored in the register.
+     * @param value The value.
+     */
     public void setValue(int value)
     {
-        if (value < 0) {
-            throw new IllegalArgumentException("Registers can only be set with positive values.\n");
-        }
-
-        int maskedValue = this.getMask() & value;
+        valueCheck(value);
+        val maskedValue = this.getMask() & value;
         this.value = maskedValue;
     }
 
+    /**
+     * Gets the value stored in the register.
+     * @return The value.
+     */
     public int getValue()
     {
         return value;
+    }
+
+    /**
+     * Gets the size of register bits.
+     * @return The register size.
+     */
+    public int getSize()
+    {
+        return size;
+    }
+
+    private void valueCheck(int value) {
+        if (value < 0 || value > this.getMask()) { // consider register overflow or exception thrown
+            throw new IllegalArgumentException(
+                String.format(
+                    "Register can only be set with positive values less than %d.%n",
+                    this.getMask()));
+        }
     }
 
     private int getMask()

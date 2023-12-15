@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>edu.gwu.seas.csci.architecture6461</groupId>
     <artifactId>architecture</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>20</maven.compiler.target>
+        <org.projectlombok.version>1.18.30</org.projectlombok.version>
     </properties>
     <dependencies>
         <dependency>
@@ -23,7 +24,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>${org.projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -46,7 +47,30 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
+                    <source>20</source>
+                    <target>20</target>
                     <release>11</release>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${org.projectlombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <index>true</index>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <mainClass>edu.gwu.seas.csci.architecture6461.App</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
             <plugin>

@@ -8,6 +8,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import lombok.val;
 
 /**
  * JavaFX App
@@ -15,7 +16,6 @@ import javafx.stage.Stage;
 public final class App extends Application {
 
     private static Scene appScene;
-    private static ProgramManager manager;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -33,7 +33,7 @@ public final class App extends Application {
     }
 
     private static void initApp() throws IOException {
-        manager = ProgramManager.getInstance();
-        appScene = new Scene(new ApplicationView(), 1280, 960);
+        val manager = ProgramManager.getInstance();
+        appScene = new Scene(new ApplicationView(manager.getCpu()), 1280, 960);
     }
 }

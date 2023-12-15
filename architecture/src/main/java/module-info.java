@@ -1,4 +1,5 @@
 module edu.gwu.seas.csci.architecture6461 {
+    requires java.logging;
     requires javafx.controls;
     requires transitive javafx.graphics;
     requires javafx.fxml;

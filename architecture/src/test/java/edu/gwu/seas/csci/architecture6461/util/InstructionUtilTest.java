@@ -20,14 +20,14 @@ public class InstructionUtilTest {
     public int instruction;
 
 
-    @Parameterized.Parameters()
+    @Parameterized.Parameters(name = "{index}: {0} from {1}")
     public static Iterable<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {Opcode.LDR,  0b0000010000000000},
-                {Opcode.CHK,  0b1111110000000000},
-                {Opcode.JCC,  0b0011000000000000},
-                {Opcode.FADD, 0b1000010000000000},
-                {Opcode.SRC,  0b0111110000000000}
+        /*0*/   {Opcode.LDR,  0b0000010000000000},
+        /*1*/   {Opcode.CHK,  0b1111110000000000},
+        /*2*/   {Opcode.JCC,  0b0011000000000000},
+        /*3*/   {Opcode.FADD, 0b1000010000000000},
+        /*4*/   {Opcode.SRC,  0b0111110000000000}
         });
     }
 

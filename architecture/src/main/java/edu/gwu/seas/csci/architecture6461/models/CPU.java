@@ -10,11 +10,15 @@ public final class CPU {
     @Getter @Setter private Register memoryAddressRegister = new Register(12);
     @Getter @Setter private Register conditionCode = new Register(4);
     @Getter @Setter private Register machineFaultRegister = new Register(4);
-    @Getter @Setter private Register memoryBufferRegister = new Register(16);
-    @Getter @Setter private Register instructionRegister = new Register(16);
-    @Getter @Setter private Register indexRegister1 = new Register(16);
-    @Getter @Setter private Register indexRegister2 = new Register(16);
-    @Getter @Setter private Register indexRegister3 = new Register(16);
+    @Getter @Setter private Register memoryBufferRegister = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register instructionRegister = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register indexRegister1 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register indexRegister2 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register indexRegister3 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register gpRegister0 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register gpRegister1 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register gpRegister2 = new Register(Register.MAX_SIZE);
+    @Getter @Setter private Register gpRegister3 = new Register(Register.MAX_SIZE);
 
     private CPU() { }
 
@@ -28,6 +32,6 @@ public final class CPU {
 
     public void reset(Memory memory)
     {
-        memory.initialize();
+        memory.initialize(2047);
     }
 }

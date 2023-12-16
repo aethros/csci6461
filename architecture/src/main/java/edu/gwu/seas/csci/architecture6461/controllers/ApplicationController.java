@@ -42,11 +42,6 @@ public class ApplicationController implements Initializable {
         this.cpu = cpu;
     }
 
-    @FXML
-    private void switchToSecondary() {
-        // ...
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         programCounterView.setRegister("programCounter", this.cpu.getProgramCounter());

@@ -6,7 +6,6 @@ import edu.gwu.seas.csci.architecture6461.managers.ProgramManager;
 import edu.gwu.seas.csci.architecture6461.views.ApplicationView;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import lombok.val;
 
@@ -26,10 +25,6 @@ public final class App extends Application {
 
     public static void main(String[] args) {
         launch();
-    }
-
-    public static void setView(Pane view) {
-        appScene.setRoot(view);
     }
 
     private static void initApp() throws IOException {

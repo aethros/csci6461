@@ -17,8 +17,6 @@ public final class ProgramManager {
     }
 
     public void start(int[] instructions) {
-        // .
-
         for (var instruction : instructions) {
             executeInstruction(instruction);
         }

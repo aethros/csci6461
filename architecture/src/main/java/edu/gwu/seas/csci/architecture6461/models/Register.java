@@ -1,16 +1,20 @@
 package edu.gwu.seas.csci.architecture6461.models;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import lombok.val;
 
 public class Register {
     public static final int MAX_SIZE = 16;
-
-    private int value;
+    private IntegerProperty value;
     private int size;
 
     protected Register(int size) {
         this.size = size;
-        this.value = 0;
+        value = new SimpleIntegerProperty(0);
+    }
+    public IntegerProperty valueProperty() {
+        return value;
     }
 
     /**
@@ -21,7 +25,7 @@ public class Register {
     {
         valueCheck(value);
         val maskedValue = this.getMask() & value;
-        this.value = maskedValue;
+        this.value.set(maskedValue);
     }
 
     /**
@@ -30,7 +34,7 @@ public class Register {
      */
     public int getValue()
     {
-        return value;
+        return value.get();
     }
 
     /**

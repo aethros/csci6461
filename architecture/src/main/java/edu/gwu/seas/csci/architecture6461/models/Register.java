@@ -21,7 +21,7 @@ public class Register {
      * Sets the value stored in the register.
      * @param value The value.
      */
-    public void setValue(int value)
+    public void setValue(int value) throws IllegalArgumentException
     {
         valueCheck(value);
         val maskedValue = this.getMask() & value;

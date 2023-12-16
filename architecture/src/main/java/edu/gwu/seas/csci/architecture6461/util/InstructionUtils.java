@@ -4,6 +4,8 @@ import edu.gwu.seas.csci.architecture6461.models.CPU;
 import edu.gwu.seas.csci.architecture6461.models.Memory;
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import lombok.val;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class InstructionUtils {
     //// 0b  000000 00 00 0 00000
@@ -19,85 +21,49 @@ public abstract class InstructionUtils {
         AIR, SIR, MLT, DVD, TRR, AND, ORR, NOT, SRC, RRC, FADD, VADD, LDFR, FSUB,
         VSUB, CNVRT, STFR, IN, OUT, CHK, HLT, TRAP;
 
+        private static final Map<Integer, Opcode> opcodeMap = new HashMap<>();
+        static {
+            opcodeMap.put(0, HLT);
+            opcodeMap.put(1, LDR);
+            opcodeMap.put(2, STR);
+            opcodeMap.put(3, LDA);
+            opcodeMap.put(4, AMR);
+            opcodeMap.put(5, SMR);
+            opcodeMap.put(6, AIR);
+            opcodeMap.put(7, SIR);
+            opcodeMap.put(10, JZ);
+            opcodeMap.put(11, JNE);
+            opcodeMap.put(12, JCC);
+            opcodeMap.put(13, JMA);
+            opcodeMap.put(14, JSR);
+            opcodeMap.put(15, RFS);
+            opcodeMap.put(16, SOB);
+            opcodeMap.put(17, JGE);
+            opcodeMap.put(20, MLT);
+            opcodeMap.put(21, DVD);
+            opcodeMap.put(22, TRR);
+            opcodeMap.put(23, AND);
+            opcodeMap.put(24, ORR);
+            opcodeMap.put(25, NOT);
+            opcodeMap.put(30, TRAP);
+            opcodeMap.put(31, SRC);
+            opcodeMap.put(32, RRC);
+            opcodeMap.put(33, FADD);
+            opcodeMap.put(34, VADD);
+            opcodeMap.put(35, FSUB);
+            opcodeMap.put(36, VSUB);
+            opcodeMap.put(37, CNVRT);
+            opcodeMap.put(41, LDX);
+            opcodeMap.put(42, STX);
+            opcodeMap.put(50, LDFR);
+            opcodeMap.put(51, STFR);
+            opcodeMap.put(61, IN);
+            opcodeMap.put(62, OUT);
+            opcodeMap.put(63, CHK);
+        }
+
         public static Opcode fromInteger(int x) {
-            switch (x) {
-                case 0:
-                    return HLT;
-                case 1:
-                    return LDR;
-                case 2:
-                    return STR;
-                case 3:
-                    return LDA;
-                case 4:
-                    return AMR;
-                case 5:
-                    return SMR;
-                case 6:
-                    return AIR;
-                case 7:
-                    return SIR;
-                case 10:
-                    return JZ;
-                case 11:
-                    return JNE;
-                case 12:
-                    return JCC;
-                case 13:
-                    return JMA;
-                case 14:
-                    return JSR;
-                case 15:
-                    return RFS;
-                case 16:
-                    return SOB;
-                case 17:
-                    return JGE;
-                case 20:
-                    return MLT;
-                case 21:
-                    return DVD;
-                case 22:
-                    return TRR;
-                case 23:
-                    return AND;
-                case 24:
-                    return ORR;
-                case 25:
-                    return NOT;
-                case 30:
-                    return TRAP;
-                case 31:
-                    return SRC;
-                case 32:
-                    return RRC;
-                case 33:
-                    return FADD;
-                case 34:
-                    return VADD;
-                case 35:
-                    return FSUB;
-                case 36:
-                    return VSUB;
-                case 37:
-                    return CNVRT;
-                case 41:
-                    return LDX;
-                case 42:
-                    return STX;
-                case 50:
-                    return LDFR;
-                case 51:
-                    return STFR;
-                case 61:
-                    return IN;
-                case 62:
-                    return OUT;
-                case 63:
-                    return CHK;
-                default:
-                    return null;
-            }
+            return opcodeMap.get(x);
         }
     }
 
@@ -249,7 +215,7 @@ public abstract class InstructionUtils {
      * @param instruction The instruction from memory.
      * @return An instruction masked to a value no greater than 65535.
      */
-    public static int maskInstruction(int instruction) {
+    public static int maskInstruction(int instruction) throws IllegalArgumentException {
         if (instruction > INSTRUCTION_MASK) {
             throw new IllegalArgumentException(
                     "Instructions must be an unsigned integer value between 0 and 65535.\n");

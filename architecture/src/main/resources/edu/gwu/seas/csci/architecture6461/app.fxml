@@ -43,7 +43,7 @@
         <RegisterView fx:id="gpRegister1View" GridPane.columnIndex="0" GridPane.rowIndex="5" />
         <RegisterView fx:id="gpRegister2View" GridPane.columnIndex="1" GridPane.rowIndex="5" />
         <RegisterView fx:id="gpRegister3View" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-        <!-- RegisterView fx:id="null" GridPane.columnIndex="0" GridPane.rowIndex="6" / -->
+        <!-- RegisterView fx:id="null" GridPane.columnIndex="1" GridPane.rowIndex="6" / -->
       </children>
     </GridPane>
     <GridPane layoutY="761.0" prefHeight="200.0" prefWidth="1280.0">
@@ -58,6 +58,9 @@
       <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       </rowConstraints>
+      <children>
+        <!-- TODO: Add control elements (load text, step, stop, etc.) -->
+      </children>
     </GridPane>
   </children>
 </fx:root>

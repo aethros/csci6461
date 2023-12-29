@@ -56,10 +56,10 @@ public class RegisterController implements Initializable {
     @FXML
     private Button button;
     
-    private String name;
-    private Register register;
-    private BitSet bitSet;
-    private Rectangle[] rectangleArray;
+    private String name; // The name of the register.
+    private Register register; // The register that this controller is bound to.
+    private BitSet bitSet; // The bit set that represents the register's value.
+    private Rectangle[] rectangleArray; // Cached set of rectangles for the register.
 
     public RegisterController() {
         // No initialization needed.
@@ -79,6 +79,10 @@ public class RegisterController implements Initializable {
         this.register.valueProperty().addListener(this::registerChangeEventListener);
     }
 
+    /**
+     * This method is called when a bit is clicked.
+     * @param event The mouse event.
+     */
     @FXML
     private void handleClicked(MouseEvent event) {
         if (this.name.equals("conditionCode") || this.name.equals("machineFaultRegister"))
@@ -87,7 +91,7 @@ public class RegisterController implements Initializable {
             return;
         }
 
-        val sender = (Rectangle) event.getSource();
+        val sender = (Rectangle) event.getSource(); // The rectangle that was clicked.
         val senderName = sender.getId();
         if (sender.getFill() == Color.DODGERBLUE) {
             sender.setFill(Color.MEDIUMBLUE);
@@ -147,6 +151,9 @@ public class RegisterController implements Initializable {
         }
     }
 
+    /**
+     * This method is called when the "Load" button is clicked.
+     */
     @FXML
     private void loadValue()
     {
@@ -154,9 +161,15 @@ public class RegisterController implements Initializable {
         this.register.setValue((int)value);
     }
 
+    /**
+     * This method is called when the value of the register changes.
+     * @param observable The register's value property.
+     * @param oldValue The old value of the register.
+     * @param newValue The new value of the register.
+     */
     private void registerChangeEventListener(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         if (Thread.currentThread().getStackTrace()[8].getClassName().equals(this.getClass().getName())) {
-            // This listener can get as a result of the loadValue() method, which will be 8 frames up the stack.
+            // This listener can get called as a result of the loadValue() method, which will be 8 frames up the stack.
             // If that's the case, we don't want to update the view.
             return;
         }
@@ -171,6 +184,10 @@ public class RegisterController implements Initializable {
         }
     }
 
+    /**
+     * Initializes the fxml view-based components of the register.
+     * This method is only called once, when the register is first created.
+     */
     private void initializeView() {
         LOGGER.log(Level.INFO, "RegisterView: {0} loaded.", name);
         this.rectangleArray = new Rectangle[] { oneBit, twoBit, threeBit, fourBit, fiveBit, sixBit, sevenBit, eightBit,

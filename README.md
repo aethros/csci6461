@@ -9,7 +9,7 @@ To build:
 
 To run:
 
- - Execute the following command from the root directory of this repo. You can then attach to the application over port `5050` to begin debugging.
+ - Execute the following command from the root directory of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application.
 
 ```shell
 java \

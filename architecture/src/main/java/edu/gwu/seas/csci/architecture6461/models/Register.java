@@ -7,9 +7,11 @@ import lombok.val;
 public class Register {
     public static final int MAX_SIZE = 16;
     private IntegerProperty value;
+    private int maskCache;
     private int size;
 
     protected Register(int size) {
+        this.maskCache = 0;
         this.size = size;
         value = new SimpleIntegerProperty(0);
     }
@@ -47,7 +49,7 @@ public class Register {
     }
 
     private void valueCheck(int value) {
-        if (value < 0 || value > this.getMask()) { // consider register overflow or exception thrown
+        if (value < 0 || value > this.getMask()) { // TODO: consider register overflow or exception thrown
             throw new IllegalArgumentException(
                 String.format(
                     "Register can only be set with positive values less than %d.%n",
@@ -57,10 +59,15 @@ public class Register {
 
     private int getMask()
     {
-        int mask = 1;
-        for (int i = 1; i < this.size; i++) {
-            mask = (mask << 1) + 1;
-        }
-        return mask;
+        if (this.maskCache == 0) {
+            int mask = 1;
+            for (int i = 1; i < this.size; i++) {
+                mask = (mask << 1) + 1;
+            }
+            // Compute the mask once and cache it.
+            this.maskCache = mask;
+        } 
+
+        return this.maskCache;
     }
 }

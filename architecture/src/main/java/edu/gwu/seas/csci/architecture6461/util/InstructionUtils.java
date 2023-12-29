@@ -186,16 +186,18 @@ public abstract class InstructionUtils {
             if (!ix) {
                 ea = address;
             } else {
-                ea = register.getValue() + address; // that is, the IX field has an
-                                                    // index register number, the contents of that register are
-                                                    // added to the contents of the address field
+                ea = register.getValue() + address;
+                // that is, the IX field has an
+                // index register number, the contents of that register are
+                // added to the contents of the address field
             }
         } else {
             if (!ix) {
                 // indirect addressing, but NO indexing
-                ea = memory.getValue(address); // It helps to think in terms of a
-                                                       // pointer where the address field has the location of the EA
-                                                       // in memory
+                ea = memory.getValue(address);
+                // It helps to think in terms of a
+                // pointer where the address field has the location of the EA
+                // in memory
             } else {
                 // both indirect addressing and indexing
                 ea = memory.getValue(register.getValue() + address);

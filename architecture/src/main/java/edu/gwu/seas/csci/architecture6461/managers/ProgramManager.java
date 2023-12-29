@@ -13,11 +13,11 @@ public final class ProgramManager {
     @Getter @Setter private CPU cpu = CPU.getInstance();
 
     private ProgramManager() {
-        this.cpu.reset(memory);
+        this.cpu.reset(this.memory);
     }
 
     public void start(int[] instructions) {
-        for (var instruction : instructions) {
+        for (var instruction : instructions) { // TODO: implement program start and end
             executeInstruction(instruction);
         }
     }
@@ -26,10 +26,11 @@ public final class ProgramManager {
     {
         val maskedInstruction = InstructionUtils.maskInstruction(instruction);
         val code = InstructionUtils.opcodeFromInstruction(maskedInstruction);
-        val address = InstructionUtils.addressFromInstruction(cpu, memory, maskedInstruction);
+        val address = InstructionUtils.addressFromInstruction(this.cpu, this.memory, maskedInstruction);
         val register = InstructionUtils.registerFromInstruction(this.cpu, maskedInstruction);
 
         switch (code) {
+            // TODO: implement all cases
             case LDR:
                 {
                     register.setValue(this.memory.getValue(address));

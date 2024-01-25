@@ -13,11 +13,9 @@ public final class Memory {
      */
     public void initialize(int size)
     {
-        if (size < MEMORY_MAX) {
-            this.data = new int[size];
-        } else {
-            this.data = new int[MEMORY_MAX];
-        }
+        this.data = (size < MEMORY_MAX) 
+            ? new int[size]
+            : new int[MEMORY_MAX];
     }
 
     /**

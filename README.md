@@ -9,7 +9,7 @@ To build:
 
 To run:
 
- - Execute the following command from the root directory of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application.
+ - Execute the following command from the root directory of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
 
 ```shell
 java \
@@ -25,6 +25,21 @@ java \
         edu.gwu.seas.csci.architecture6461/edu.gwu.seas.csci.architecture6461.App \
     -jar \
         architecture/target/architecture-1.0.0.jar;
+```
+
+CLI Arguments Explanation:
+
+```shell
+java                # Command to start JDK Runtime Environment
+    -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5050
+                    # Java Debug Wire Protocol option, with Debug Transport type `socket`. Address set to local port.
+    -XX:+ShowCodeDetailsInExceptionMessages
+                    # Set exception messages to contain snippets of the code where the Exception was raised.
+    --module-path   # A `:` separated list of directories, each directory is a directory of modules.
+    --add-modules   # Root modules to resolve in addition to the initial module. <module name> can also be ALL-DEFAULT, ALL-SYSTEM, ALL-MODULE-PATH.
+    -classpath      # A `:` separated list of directories, JAR archives, and ZIP archives to search for class files.
+    --module        # <module>[/<mainclass>] [args...] (to execute the main class in a module)
+    -jar            # <jarfile> [args...] (to execute a jar file)
 ```
 
 ## Program Details

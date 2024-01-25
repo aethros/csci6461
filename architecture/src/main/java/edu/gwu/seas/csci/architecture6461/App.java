@@ -2,12 +2,10 @@ package edu.gwu.seas.csci.architecture6461;
 
 import java.io.IOException;
 
-import edu.gwu.seas.csci.architecture6461.managers.ProgramManager;
-import edu.gwu.seas.csci.architecture6461.views.ApplicationView;
+import edu.gwu.seas.csci.architecture6461.views.AssemblerView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lombok.val;
 
 /**
  * JavaFX App
@@ -28,7 +26,8 @@ public final class App extends Application {
     }
 
     private static void initApp() throws IOException {
-        val manager = ProgramManager.getInstance();
-        appScene = new Scene(new ApplicationView(manager.getCpu()), 1280, 960);
+        // val manager = ProgramManager.getInstance();
+        // appScene = new Scene(new ApplicationView(manager.getCpu()), 1280, 960);
+        appScene = new Scene(new AssemblerView(), 1280, 960);
     }
 }

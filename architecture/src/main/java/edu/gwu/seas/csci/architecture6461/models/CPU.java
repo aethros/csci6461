@@ -32,6 +32,6 @@ public final class CPU {
 
     public void reset(Memory memory)
     {
-        memory.initialize(2047); // TODO: consider memory size
+        memory.initialize(2048);
     }
 }

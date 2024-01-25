@@ -7,12 +7,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 
-public final class ProgramManager {
-    private static ProgramManager instance;
+public final class ControlUnit {
     @Getter @Setter private Memory memory = Memory.getInstance();
     @Getter @Setter private CPU cpu = CPU.getInstance();
 
-    private ProgramManager() {
+    public ControlUnit() {
         this.cpu.reset(this.memory);
     }
 
@@ -27,7 +26,7 @@ public final class ProgramManager {
         val maskedInstruction = InstructionUtils.maskInstruction(instruction);
         val code = InstructionUtils.opcodeFromInstruction(maskedInstruction);
         val address = InstructionUtils.addressFromInstruction(this.cpu, this.memory, maskedInstruction);
-        val register = InstructionUtils.registerFromInstruction(this.cpu, maskedInstruction);
+        val register = InstructionUtils.gpRegisterFromInstruction(this.cpu, maskedInstruction);
 
         switch (code) {
             // TODO: implement all cases
@@ -44,13 +43,5 @@ public final class ProgramManager {
             default:
                 break;
         }
-    }
-
-    public static ProgramManager getInstance() {
-        if (instance == null) {
-            instance = new ProgramManager();
-        }
-
-        return instance;
     }
 }

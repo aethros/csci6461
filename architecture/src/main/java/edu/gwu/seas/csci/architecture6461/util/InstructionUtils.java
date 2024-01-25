@@ -12,14 +12,14 @@ public abstract class InstructionUtils {
     ////       ^    ^   ^ ^   ^
     ////     OPCODE R  IX I ADDRS
     private static final int INSTRUCTION_MASK       = 0xFFFF; // 111111 11 11 1 11111
-    private static final int INDIRECT_REGISTER_MASK = 0x00C0; // 000000 00 11 0 00000
+    private static final int INDEX_REGISTER_MASK    = 0x00C0; // 000000 00 11 0 00000
     private static final int INDIRECT_MASK          = 0x0020; // 000000 00 00 1 00000
     private static final int ADDRESS_MASK           = 0x001F; // 000000 00 00 0 11111
 
     public enum Opcode {
         LDR, STR, LDA, JZ, JNE, JCC, JMA, JSR, RFS, SOB, JGE, LDX, STX, AMR, SMR,
         AIR, SIR, MLT, DVD, TRR, AND, ORR, NOT, SRC, RRC, FADD, VADD, LDFR, FSUB,
-        VSUB, CNVRT, STFR, IN, OUT, CHK, HLT, TRAP;
+        VSUB, CNVRT, STFR, IN, OUT, CHK, HLT, TRAP, SETCCE;
 
         private static final Map<Integer, Opcode> opcodeMap = new HashMap<>();
         static {
@@ -45,7 +45,6 @@ public abstract class InstructionUtils {
             opcodeMap.put(23, AND);
             opcodeMap.put(24, ORR);
             opcodeMap.put(25, NOT);
-            opcodeMap.put(30, TRAP);
             opcodeMap.put(31, SRC);
             opcodeMap.put(32, RRC);
             opcodeMap.put(33, FADD);
@@ -55,6 +54,8 @@ public abstract class InstructionUtils {
             opcodeMap.put(37, CNVRT);
             opcodeMap.put(41, LDX);
             opcodeMap.put(42, STX);
+            opcodeMap.put(44, SETCCE);
+            opcodeMap.put(45, TRAP);
             opcodeMap.put(50, LDFR);
             opcodeMap.put(51, STFR);
             opcodeMap.put(61, IN);
@@ -146,7 +147,27 @@ public abstract class InstructionUtils {
         return Opcode.fromInteger(opcodeBytes);
     }
 
-    public static Register registerFromInstruction(CPU cpu, int instruction) {
+
+    public static Register indexRegisterFromInstruction(CPU cpu, int instruction) {
+        int maskedInstruction = maskInstruction(instruction);
+        int registerBytes = (maskedInstruction >>> 6) & 0b01111;
+        // the register bytes need to do an unsigned right shift (>>>)
+        // 6 places (1 place past i bit and 5 places past address bits)
+        // and then they need an and (&) with lower 4 bits to get their 
+        // binary value.
+        switch (registerBytes) {
+            case 0b0001:
+                return cpu.getIndexRegister1();
+            case 0b0010:
+                return cpu.getIndexRegister2();
+            case 0b0011:
+                return cpu.getIndexRegister3();
+            default:
+                return null;
+        }
+    }
+
+    public static Register gpRegisterFromInstruction(CPU cpu, int instruction) {
         int maskedInstruction = maskInstruction(instruction);
         int registerBytes = (maskedInstruction >>> 6) & 0b01111;
         // the register bytes need to do an unsigned right shift (>>>)
@@ -162,12 +183,6 @@ public abstract class InstructionUtils {
                 return cpu.getGpRegister2();
             case 0b1100:
                 return cpu.getGpRegister3();
-            case 0b0001:
-                return cpu.getIndexRegister1();
-            case 0b0010:
-                return cpu.getIndexRegister2();
-            case 0b0011:
-                return cpu.getIndexRegister3();
             default:
                 return null;
         }
@@ -177,16 +192,16 @@ public abstract class InstructionUtils {
         int ea;
         val maskedInstruction = maskInstruction(instruction);
         val i = (maskedInstruction & INDIRECT_MASK) > 0;
-        val ix = (maskedInstruction & INDIRECT_REGISTER_MASK) > 0;
+        val ix = (maskedInstruction & INDEX_REGISTER_MASK) > 0;
         val address = InstructionUtils.getAddressBits(maskedInstruction);
-        val register = InstructionUtils.registerFromInstruction(cpu, maskedInstruction);
+        val indexRegister = InstructionUtils.indexRegisterFromInstruction(cpu, maskedInstruction);
 
         if (!i) {
             // NO indirect addressing
             if (!ix) {
                 ea = address;
             } else {
-                ea = register.getValue() + address;
+                ea = indexRegister.getValue() + address;
                 // that is, the IX field has an
                 // index register number, the contents of that register are
                 // added to the contents of the address field
@@ -200,7 +215,7 @@ public abstract class InstructionUtils {
                 // in memory
             } else {
                 // both indirect addressing and indexing
-                ea = memory.getValue(register.getValue() + address);
+                ea = memory.getValue(indexRegister.getValue() + address);
                 // another way to think of this is take the EA computed without
                 // indirections and use that as the location of where the EA is stored.
             }

@@ -26,8 +26,6 @@ public final class App extends Application {
     }
 
     private static void initApp() throws IOException {
-        // val manager = ProgramManager.getInstance();
-        // appScene = new Scene(new ApplicationView(manager.getCpu()), 1280, 960);
         appScene = new Scene(new AssemblerView(), 1280, 960);
     }
 }

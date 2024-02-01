@@ -1,9 +1,4 @@
 # Program Overview
-## Offerings
- - I have a program shell which contains some stuff to get started
- - I haven't built an assembler yet so this part will be new for us all
- - I have a shell for an assembler but want to include you all in building each component
- - First I want to get everyone up to speed on application and using git
 ## Git
  - Git is a version control system (VCS) which allows people to work on a project at the same time
  - Users can checkout "branches", or working copies of their source code
@@ -64,7 +59,5 @@
  - Understand the role of View
  - Understand the role of Models
  - Understand the role of a Controller
-## Ask questions if you are lost!
- - I am here to help!!!
 ## Approve pull request
  - Approve pull request when you feel like you know enough to start working on project

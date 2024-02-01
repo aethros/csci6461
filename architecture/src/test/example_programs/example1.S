@@ -1,4 +1,4 @@
-No:       LOC     1,2,10,1    ;BEGIN AT LOCATION 6
+          LOC     6           ;BEGIN AT LOCATION 6
           Data    10          ;PUT 10 AT LOCATION 6
           Data    3           ;PUT 3 AT LOCATION 7
           Data    End         ;PUT 1024 AT LOCATION 8

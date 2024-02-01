@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized.Parameter;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils.Opcode;
 
 @RunWith(value = Parameterized.class)
-public class InstructionUtilTest {
+public class OpcodeFromInstructionTest {
 
     @Parameter(0)
     public Opcode code;

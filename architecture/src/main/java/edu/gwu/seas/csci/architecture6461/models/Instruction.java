@@ -12,6 +12,8 @@ public class Instruction {
     private String label;
     @Getter
     private String opcode;
+    @Getter
+    private String operandSymbol;
     private String[] operands;
 
     public Instruction(String instruction) {
@@ -19,7 +21,7 @@ public class Instruction {
         val tokens = Arrays.stream(instruction.split(" ")).filter(s -> s.length() > 0).collect(Collectors.toList());
 
         if ( tokens.size() == 0                                 // token count too low
-        ||   tokens.size() > 3                                  // token count too high
+        ||   tokens.size() >  3                                 // token count too high
         || (!tokens.get(0).endsWith(":") && tokens.size() > 2)) // token count too high for unlabeled instructions
         {
             throw new IllegalArgumentException("Invalid token count for instruction: " + instruction);
@@ -27,14 +29,44 @@ public class Instruction {
         else if (tokens.get(0).endsWith(":")) { // instruction has label
             this.label    = tokens.get(0).split(":")[0].trim();
             this.opcode   = tokens.get(1);
-            val operand   = tokens.get(2);
-            this.operands = operand.split(",");
+            try {
+                val operand   = tokens.get(2);
+                this.operands = operand.split(",");
+                this.operandSymbol = this.setOperandSymbol();
+
+                if (this.operands.length > 4) {
+                    throw new IllegalArgumentException("Too many operands for instruction: " + instruction);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                // no operands
+            }
         }
         else { // instruction has no label
             this.opcode   = tokens.get(0);
-            val operand   = tokens.get(1);
-            this.operands = operand.split(",");
+            try {
+                val operand   = tokens.get(1);
+                this.operands = operand.split(",");
+                this.operandSymbol = this.setOperandSymbol();
+
+                if (this.operands.length > 4) {
+                    throw new IllegalArgumentException("Too many operands for instruction: " + instruction);
+                }
+            } catch (IndexOutOfBoundsException e) {
+                // no operands
+            }
         }
+    }
+
+    private String setOperandSymbol() {
+        for (String operand : operands) {
+            if (operand.matches("([a-zA-Z]+)")) {
+                return operand;
+            }
+            else if (operand.matches("(\\d+)")) {
+                return null;
+            }
+        }
+        return null;
     }
 
     public boolean hasLabel() {
@@ -42,16 +74,14 @@ public class Instruction {
     }
 
     public boolean operandSymbol() {
-        return this.operands.length > 0 && Integer.parseInt(this.operands[0]) != -1;
+        return this.operandSymbol != null && this.operandSymbol.length() > 0;
     }
 
-    public String getOperandSymbol() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getSymbol'");
-    }
-
-    public int getOperand() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOperand'");
+    public Integer getOperand(int operand) {
+        try {
+            return Integer.parseInt(this.operands[operand]);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

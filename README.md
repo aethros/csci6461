@@ -43,7 +43,9 @@ java                # Command to start JDK Runtime Environment
 ```
 
 ## Program Details
-This is a simple CPU simulator set up with a Model-View-Controller pattern. Each View consumes a model, and transforms it from the controller.
+The following information is a brief overview of the application. For more detailed information, see the `./docs/` directory.
+
+This is a simple CPU simulator set up with a Model-View-Controller pattern. Each View displays a data model, and transforms it via the controller.
 
 Ex.:
 ```
@@ -56,10 +58,12 @@ App
      `-- Register Model
 ```
 
-State management is handled by a Manager class. The manager is a singleton (only one ever exists) which manages all state throughout the application. This includes behavior such as starrting, stopping, and resetting the application.
+State management is handled by Manager classes. The session manager is a singleton (only one ever exists) which manages all state throughout the application. This includes behavior such as starrting, stopping, and resetting application state. There are other managers which handle state for specific functions or behaviors. For example, the control unit manages machine instructions, machine memory, and other functions. The assembler manages the process of converting assembly instructions to machine code.
 
 Ex.:
 ```
 App
- `-- Program Manager
+ |-- Session Manager
+ |-- Control Unit
+ `-- Assembler
 ```

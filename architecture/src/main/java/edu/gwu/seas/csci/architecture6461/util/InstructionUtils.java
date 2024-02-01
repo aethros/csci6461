@@ -12,6 +12,8 @@ public abstract class InstructionUtils {
     ////       ^    ^   ^ ^   ^
     ////     OPCODE R  IX I ADDRS
     private static final int INSTRUCTION_MASK       = 0xFFFF; // 111111 11 11 1 11111
+    private static final int OPCODE_MASK            = 0xFC00; // 111111 00 00 0 00000
+    private static final int GP_REGISTER_MASK       = 0x0300; // 000000 11 00 0 00000
     private static final int INDEX_REGISTER_MASK    = 0x00C0; // 000000 00 11 0 00000
     private static final int INDIRECT_MASK          = 0x0020; // 000000 00 00 1 00000
     private static final int ADDRESS_MASK           = 0x001F; // 000000 00 00 0 11111
@@ -65,6 +67,15 @@ public abstract class InstructionUtils {
 
         public static Opcode fromInteger(int x) {
             return opcodeMap.get(x);
+        }
+
+
+        public static int toInteger(Opcode x) {
+            return opcodeMap.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(x))
+                    .map(Map.Entry::getKey)
+                    .findFirst()
+                    .orElse(0);
         }
     }
 
@@ -147,21 +158,21 @@ public abstract class InstructionUtils {
         return Opcode.fromInteger(opcodeBytes);
     }
 
-
     public static Register indexRegisterFromInstruction(CPU cpu, int instruction) {
         int maskedInstruction = maskInstruction(instruction);
-        int registerBytes = (maskedInstruction >>> 6) & 0b01111;
+        int registerBytes = (maskedInstruction >>> 6) & 0b011;
         // the register bytes need to do an unsigned right shift (>>>)
         // 6 places (1 place past i bit and 5 places past address bits)
         // and then they need an and (&) with lower 4 bits to get their 
         // binary value.
         switch (registerBytes) {
-            case 0b0001:
+            case 0b01:
                 return cpu.getIndexRegister1();
-            case 0b0010:
+            case 0b10:
                 return cpu.getIndexRegister2();
-            case 0b0011:
+            case 0b11:
                 return cpu.getIndexRegister3();
+            case 0b00:
             default:
                 return null;
         }
@@ -169,19 +180,19 @@ public abstract class InstructionUtils {
 
     public static Register gpRegisterFromInstruction(CPU cpu, int instruction) {
         int maskedInstruction = maskInstruction(instruction);
-        int registerBytes = (maskedInstruction >>> 6) & 0b01111;
+        int registerBytes = (maskedInstruction >>> 8) & 0b011;
         // the register bytes need to do an unsigned right shift (>>>)
         // 6 places (1 place past i bit and 5 places past address bits)
         // and then they need an and (&) with lower 4 bits to get their 
         // binary value.
         switch (registerBytes) {
-            case 0b0000:
+            case 0b00:
                 return cpu.getGpRegister0();
-            case 0b0100:
+            case 0b01:
                 return cpu.getGpRegister1();
-            case 0b1000:
+            case 0b10:
                 return cpu.getGpRegister2();
-            case 0b1100:
+            case 0b11:
                 return cpu.getGpRegister3();
             default:
                 return null;

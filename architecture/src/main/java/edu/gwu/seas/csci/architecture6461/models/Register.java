@@ -15,16 +15,17 @@ public class Register {
         this.size = size;
         value = new SimpleIntegerProperty(0);
     }
+
     public IntegerProperty valueProperty() {
         return value;
     }
 
     /**
      * Sets the value stored in the register.
+     * 
      * @param value The value.
      */
-    public void setValue(int value) throws IllegalArgumentException
-    {
+    public void setValue(int value) throws IllegalArgumentException {
         valueCheck(value);
         val maskedValue = this.getMask() & value;
         this.value.set(maskedValue);
@@ -32,33 +33,32 @@ public class Register {
 
     /**
      * Gets the value stored in the register.
+     * 
      * @return The value.
      */
-    public int getValue()
-    {
+    public int getValue() {
         return value.get();
     }
 
     /**
      * Gets the size of register bits.
+     * 
      * @return The register size.
      */
-    public int getSize()
-    {
+    public int getSize() {
         return size;
     }
 
     private void valueCheck(int value) {
-        if (value < 0 || value > this.getMask()) { // TODO: consider register overflow or exception thrown
+        if (value < 0 || value > this.getMask()) {
             throw new IllegalArgumentException(
-                String.format(
-                    "Register can only be set with positive values less than %d.%n",
-                    this.getMask()));
+                    String.format(
+                            "Register can only be set with positive values less than %d.%n",
+                            this.getMask()));
         }
     }
 
-    private int getMask()
-    {
+    private int getMask() {
         if (this.maskCache == 0) {
             int mask = 1;
             for (int i = 1; i < this.size; i++) {
@@ -66,7 +66,7 @@ public class Register {
             }
             // Compute the mask once and cache it.
             this.maskCache = mask;
-        } 
+        }
 
         return this.maskCache;
     }

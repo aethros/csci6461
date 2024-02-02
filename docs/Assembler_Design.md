@@ -21,8 +21,8 @@ https://www.d.umn.edu/~gshute/asm/assembler-organization.html
         ```
 
     2. Scanner
-        - The scanner reads lines from the input and loads them into a buffer.
-        - The scanner then combines the characters from a line of input into tokens and returns the parsed instruction for a given line.
+        - The scanner reads instructions from the input and loads them into a buffer.
+        - The scanner then parses the tokens from a line of input into values and returns the parsed instruction for a given line.
         - Each parsed instruction corresponds to a label, an opcode, and several operands.
 
 ## Tasks:

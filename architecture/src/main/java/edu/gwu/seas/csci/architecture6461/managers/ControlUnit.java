@@ -8,8 +8,12 @@ import lombok.Setter;
 import lombok.val;
 
 public final class ControlUnit {
-    @Getter @Setter private Memory memory = Memory.getInstance();
-    @Getter @Setter private CPU cpu = CPU.getInstance();
+    @Getter
+    @Setter
+    private Memory memory = Memory.getInstance();
+    @Getter
+    @Setter
+    private CPU cpu = CPU.getInstance();
 
     public ControlUnit() {
         this.cpu.reset(this.memory);
@@ -21,8 +25,7 @@ public final class ControlUnit {
         }
     }
 
-    public void executeInstruction(int instruction)
-    {
+    public void executeInstruction(int instruction) {
         val maskedInstruction = InstructionUtils.maskInstruction(instruction);
         val code = InstructionUtils.opcodeFromInstruction(maskedInstruction);
         val address = InstructionUtils.addressFromInstruction(this.cpu, this.memory, maskedInstruction);
@@ -30,15 +33,13 @@ public final class ControlUnit {
 
         switch (code) {
             // TODO: implement all cases
-            case LDR:
-                {
-                    register.setValue(this.memory.getValue(address));
-                }
+            case LDR: {
+                register.setValue(this.memory.getValue(address));
+            }
                 break;
-            case STR:
-                {
-                    this.memory.setValue(address, register.getValue());
-                }
+            case STR: {
+                this.memory.setValue(address, register.getValue());
+            }
                 break;
             default:
                 break;

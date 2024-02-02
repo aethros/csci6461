@@ -28,10 +28,13 @@
       </rowConstraints>
       <children>
         <RegisterView fx:id="programCounterView" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <RegisterView fx:id="memoryAddressRegisterView" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <RegisterView fx:id="memoryAddressRegisterView" GridPane.columnIndex="1"
+          GridPane.rowIndex="0" />
         <RegisterView fx:id="conditionCodeView" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <RegisterView fx:id="machineFaultRegisterView" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-        <RegisterView fx:id="memoryBufferRegisterView" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <RegisterView fx:id="machineFaultRegisterView" GridPane.columnIndex="1"
+          GridPane.rowIndex="1" />
+        <RegisterView fx:id="memoryBufferRegisterView" GridPane.columnIndex="0"
+          GridPane.rowIndex="2" />
         <RegisterView fx:id="instructionRegisterView" GridPane.columnIndex="1" GridPane.rowIndex="2" />
         <RegisterView fx:id="indexRegister1View" GridPane.columnIndex="0" GridPane.rowIndex="3" />
         <RegisterView fx:id="indexRegister2View" GridPane.columnIndex="1" GridPane.rowIndex="3" />

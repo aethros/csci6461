@@ -20,7 +20,7 @@
  - The application state (overall system state and logic) is handled by a "Manager" class, which is a singleton
  - Only one instance of a singleton can be created
 
-# Desired learning objectives
+# First Steps
 ## Learn how Git works
  - Clone a repository
  - Checkout code

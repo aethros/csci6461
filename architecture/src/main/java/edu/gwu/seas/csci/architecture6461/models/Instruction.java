@@ -20,17 +20,17 @@ public class Instruction {
         instruction = instruction.split(";")[0]; // remove comments
         val tokens = Arrays.stream(instruction.split(" ")).filter(s -> s.length() > 0).collect(Collectors.toList());
 
-        if ( tokens.size() == 0                                 // token count too low
-        ||   tokens.size() >  3                                 // token count too high
-        || (!tokens.get(0).endsWith(":") && tokens.size() > 2)) // token count too high for unlabeled instructions
+        if (tokens.size() == 0 // token count too low
+                || tokens.size() > 3 // token count too high
+                || (!tokens.get(0).endsWith(":") && tokens.size() > 2)) // token count too high for unlabeled
+                                                                        // instructions
         {
             throw new IllegalArgumentException("Invalid token count for instruction: " + instruction);
-        }
-        else if (tokens.get(0).endsWith(":")) { // instruction has label
-            this.label    = tokens.get(0).split(":")[0].trim();
-            this.opcode   = tokens.get(1);
+        } else if (tokens.get(0).endsWith(":")) { // instruction has label
+            this.label = tokens.get(0).split(":")[0].trim();
+            this.opcode = tokens.get(1);
             try {
-                val operand   = tokens.get(2);
+                val operand = tokens.get(2);
                 this.operands = operand.split(",");
                 this.operandSymbol = this.setOperandSymbol();
 
@@ -40,11 +40,10 @@ public class Instruction {
             } catch (IndexOutOfBoundsException e) {
                 // no operands
             }
-        }
-        else { // instruction has no label
-            this.opcode   = tokens.get(0);
+        } else { // instruction has no label
+            this.opcode = tokens.get(0);
             try {
-                val operand   = tokens.get(1);
+                val operand = tokens.get(1);
                 this.operands = operand.split(",");
                 this.operandSymbol = this.setOperandSymbol();
 
@@ -61,8 +60,7 @@ public class Instruction {
         for (String operand : operands) {
             if (operand.matches("([a-zA-Z]+)")) {
                 return operand;
-            }
-            else if (operand.matches("(\\d+)")) {
+            } else if (operand.matches("(\\d+)")) {
                 return null;
             }
         }
@@ -83,5 +81,10 @@ public class Instruction {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return this.label + ": " + this.opcode + ' ' + Arrays.toString(this.operands);
     }
 }

@@ -16,11 +16,11 @@ java \
     -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5050 \
     -XX:+ShowCodeDetailsInExceptionMessages \
     --module-path \
-        $PWD/architecture/target/classes:$M2_REPO/org/openjfx/javafx-base/13/javafx-base-13-linux.jar:$M2_REPO/org/openjfx/javafx-fxml/13/javafx-fxml-13-linux.jar:$M2_REPO/org/openjfx/javafx-controls/13/javafx-controls-13-linux.jar:$M2_REPO/org/openjfx/javafx-graphics/13/javafx-graphics-13-linux.jar:$M2_REPO/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar \
+        $PWD/architecture/target/classes:$M2_REPO/org/openjfx/javafx-base/17.0.10/javafx-base-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-fxml/17.0.10/javafx-fxml-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-controls/17.0.10/javafx-controls-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-graphics/17.0.10/javafx-graphics-17.0.10-linux.jar:$M2_REPO/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar \
     --add-modules \
         edu.gwu.seas.csci.architecture6461 \
     -classpath \
-        $M2_REPO/org/openjfx/javafx-base/13/javafx-base-13.jar:$M2_REPO/org/openjfx/javafx-fxml/13/javafx-fxml-13.jar:$M2_REPO/org/openjfx/javafx-controls/13/javafx-controls-13.jar:$M2_REPO/org/openjfx/javafx-graphics/13/javafx-graphics-13.jar \
+        $M2_REPO/org/openjfx/javafx-base/17.0.10/javafx-base-17.0.10.jar:$M2_REPO/org/openjfx/javafx-fxml/17.0.10/javafx-fxml-17.0.10.jar:$M2_REPO/org/openjfx/javafx-controls/17.0.10/javafx-controls-17.0.10.jar:$M2_REPO/org/openjfx/javafx-graphics/17.0.10/javafx-graphics-17.0.10.jar \
     --module \
         edu.gwu.seas.csci.architecture6461/edu.gwu.seas.csci.architecture6461.App \
     -jar \

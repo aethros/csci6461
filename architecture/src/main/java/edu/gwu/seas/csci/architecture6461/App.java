@@ -16,16 +16,12 @@ public final class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        initApp();
+        appScene = new Scene(new AssemblerView(), 1280, 960);
         stage.setScene(appScene);
         stage.show();
     }
 
     public static void main(String[] args) {
         launch();
-    }
-
-    private static void initApp() throws IOException {
-        appScene = new Scene(new AssemblerView(), 1280, 960);
     }
 }

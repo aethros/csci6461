@@ -10,7 +10,8 @@ public final class SessionManager {
     @Getter
     private final ControlUnit controlUnit = new ControlUnit();
 
-    private SessionManager() { }
+    private SessionManager() {
+    }
 
     public static SessionManager getInstance() {
         if (instance == null) {

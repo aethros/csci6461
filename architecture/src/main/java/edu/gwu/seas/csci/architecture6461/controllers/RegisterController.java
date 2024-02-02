@@ -17,7 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import lombok.val;
 
-public class RegisterController implements Initializable {    
+public class RegisterController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(RegisterController.class.getName());
     @FXML
     private Label label;
@@ -55,7 +55,7 @@ public class RegisterController implements Initializable {
     private Rectangle sixteenBit;
     @FXML
     private Button button;
-    
+
     private String name; // The name of the register.
     private Register register; // The register that this controller is bound to.
     private BitSet bitSet; // The bit set that represents the register's value.
@@ -81,12 +81,12 @@ public class RegisterController implements Initializable {
 
     /**
      * This method is called when a bit is clicked.
+     * 
      * @param event The mouse event.
      */
     @FXML
     private void handleClicked(MouseEvent event) {
-        if (this.name.equals("conditionCode") || this.name.equals("machineFaultRegister"))
-        {
+        if (this.name.equals("conditionCode") || this.name.equals("machineFaultRegister")) {
             // Special case: these registers are read-only.
             return;
         }
@@ -98,7 +98,7 @@ public class RegisterController implements Initializable {
         } else {
             sender.setFill(Color.DODGERBLUE);
         }
-        
+
         switch (senderName) {
             case "oneBit":
                 this.bitSet.flip(0);
@@ -155,26 +155,28 @@ public class RegisterController implements Initializable {
      * This method is called when the "Load" button is clicked.
      */
     @FXML
-    private void loadValue()
-    {
+    private void loadValue() {
         val value = this.bitSet.isEmpty() ? 0 : this.bitSet.toLongArray()[0];
-        this.register.setValue((int)value);
+        this.register.setValue((int) value);
     }
 
     /**
      * This method is called when the value of the register changes.
+     * 
      * @param observable The register's value property.
-     * @param oldValue The old value of the register.
-     * @param newValue The new value of the register.
+     * @param oldValue   The old value of the register.
+     * @param newValue   The new value of the register.
      */
-    private void registerChangeEventListener(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+    private void registerChangeEventListener(ObservableValue<? extends Number> observable, Number oldValue,
+            Number newValue) {
         if (Thread.currentThread().getStackTrace()[8].getClassName().equals(this.getClass().getName())) {
-            // This listener can get called as a result of the loadValue() method, which will be 8 frames up the stack.
+            // This listener can get called as a result of the loadValue() method, which
+            // will be 8 frames up the stack.
             // If that's the case, we don't want to update the view.
             return;
         }
-        
-        this.bitSet = BitSet.valueOf(new long[] {newValue.longValue()});
+
+        this.bitSet = BitSet.valueOf(new long[] { newValue.longValue() });
         for (int i = 0; i < this.register.getSize(); i++) {
             if (this.bitSet.get(i)) {
                 this.rectangleArray[i].setFill(Color.DODGERBLUE);

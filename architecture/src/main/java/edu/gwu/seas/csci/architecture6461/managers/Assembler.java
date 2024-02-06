@@ -24,8 +24,11 @@ public final class Assembler {
     private static final int REGISTER_BIT_POSITION = 8;
     private static final int INDEX_BIT_POSITION = 6;
     private static final int INDIRECT_BIT_POSITION = 5;
-    private static final int INDEX_REGISTER_BITS = 2;
+    private static final int AL_BIT_POSITION = 7;
+    private static final int LR_BIT_POSITION = 6;
     private static final int ADDRESS_BITS = 5;
+    private static final int COUNT_BITS = 4;
+    private static final int INDEX_REGISTER_BITS = 2;
     private static final int INDIRECT_BITS = 1;
     private Map<Integer, Integer> programMemory;
 
@@ -106,8 +109,14 @@ public final class Assembler {
                     symbolValue = this.calculateSymbol(symbolTable, instruction);
                     value = this.setAddressBits(value, instruction.getOperand(0), symbolValue);
                     break;
-                case "JZ":
-                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.JZ);
+                case "HLT":
+                    value = this.setOpcodeBits(Opcode.HLT);
+                    break;
+                case "LDR":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.LDR);
+                    break;
+                case "STR":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.STR);
                     break;
                 case "LDA":
                     value = this.setFourOperandValue(symbolTable, instruction, Opcode.LDA);
@@ -115,18 +124,101 @@ public final class Assembler {
                 case "LDX":
                     value = this.setThreeOperandValue(symbolTable, instruction, Opcode.LDX);
                     break;
-                case "LDR":
-                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.LDR);
+                case "STX":
+                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.STX);
                     break;
+                case "JZ":
+                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.JZ);
+                    break;
+                case "JNE":
+                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.JNE);
+                    break;
+                case "JCC":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.JCC);
+                    break;
+                case "JMA":
+                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.JMA);
+                    break;
+                case "JSR":
+                    value = this.setThreeOperandValue(symbolTable, instruction, Opcode.JSR);
+                    break;
+                case "RFS":
+                    symbolValue = this.calculateSymbol(symbolTable, instruction);
+                    this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+
+                    value = this.setOpcodeBits(Opcode.RFS);
+                    value |= this.setAddressBits(value, instruction.getOperand(0), symbolValue);
+                    break;
+                case "SOB":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.SOB);
+                    break;
+                case "JGE":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.JGE);
+                    break;
+                case "AMR":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.AMR);
+                    break;
+                case "SMR":
+                    value = this.setFourOperandValue(symbolTable, instruction, Opcode.SMR);
+                    break;
+                case "AIR":
+                    value = this.setAddressRegisterOperands(symbolTable, instruction, Opcode.AIR);
+                    break;
+                case "SIR":
+                    value = this.setAddressRegisterOperands(symbolTable, instruction, Opcode.SIR);
+                    break;
+                case "MLT":
+                    value = this.setTwoOperandValue(instruction, Opcode.MLT);
+                    break;
+                case "DVD":
+                    value = this.setTwoOperandValue(instruction, Opcode.DVD);
+                    break;
+                case "TRR":
+                    value = this.setTwoOperandValue(instruction, Opcode.TRR);
+                    break;
+                case "AND":
+                    value = this.setTwoOperandValue(instruction, Opcode.AND);
+                    break;
+                case "ORR":
+                    value = this.setTwoOperandValue(instruction, Opcode.ORR);
+                    break;
+                case "NOT":
+                    this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+            
+                    value = this.setOpcodeBits(Opcode.NOT);
+                    value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
+                    break;
+                case "SRC":
+                    value = this.setShiftRotateOperands(symbolTable, instruction, Opcode.ORR);
+                    break;
+                case "RRC":
+                    value = this.setShiftRotateOperands(symbolTable, instruction, Opcode.RRC);
+                    break;
+                case "IN":
+                    value = this.setAddressRegisterOperands(symbolTable, instruction, Opcode.IN);
+                    break;
+                case "OUT":
+                    value = this.setAddressRegisterOperands(symbolTable, instruction, Opcode.OUT);
+                    break;
+                case "CHK":
+                    value = this.setAddressRegisterOperands(symbolTable, instruction, Opcode.CHK);
+                    break;
+                // Floating Point Instructions
+                // TODO: case "FADD":
+                // TODO: case "FSUB":
+                // TODO: case "VADD":
+                // TODO: case "VSUB":
+                // TODO: case "CNVRT":
+                // TODO: case "LDFR":
+                // TODO: case "STFR":
                 case "SETCCE":
                     this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
 
                     value = this.setOpcodeBits(Opcode.SETCCE);
                     value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
                     break;
-                case "HLT":
-                    value = this.setOpcodeBits(Opcode.HLT);
-                    break;
+                // TODO: case "TRAP":
+                case "LOC":
                 default:
                     break;
             }
@@ -208,6 +300,46 @@ public final class Assembler {
             i *= 8; // Multiply `i` by 8
         }
         return decimal;
+    }
+
+    private int setAddressRegisterOperands(Map<String, Integer> symbolTable, Instruction instruction, Opcode opcode) {
+        int value;
+        Integer symbolValue;
+        symbolValue = this.calculateSymbol(symbolTable, instruction);
+        this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+        this.checkOperandBits(instruction.getOperand(1), ADDRESS_BITS);
+         
+        value = this.setOpcodeBits(opcode);
+        value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
+        value |= this.setAddressBits(value, instruction.getOperand(1), symbolValue);
+        return value;
+    }
+
+    private int setShiftRotateOperands(Map<String, Integer> table, Instruction instruction, Opcode opcode) {
+        int value;
+        Integer symbolValue = this.calculateSymbol(table, instruction);
+        this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+        this.checkOperandBits(instruction.getOperand(2), INDIRECT_BITS);
+        this.checkOperandBits(instruction.getOperand(3), INDIRECT_BITS);
+        this.checkOperandBits(instruction.getOperand(1), COUNT_BITS);
+
+        value = this.setOpcodeBits(opcode);
+        value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
+        value |= this.setOperandBits(value, instruction.getOperand(2), AL_BIT_POSITION);
+        value |= this.setOperandBits(value, instruction.getOperand(3), LR_BIT_POSITION);
+        value |= this.setAddressBits(value, instruction.getOperand(1), symbolValue);
+        return value;
+    }
+
+    private int setTwoOperandValue(Instruction instruction, final Opcode opcode) {
+        int value;
+        this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+        this.checkOperandBits(instruction.getOperand(1), INDEX_REGISTER_BITS);
+
+        value = this.setOpcodeBits(opcode);
+        value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
+        value |= this.setAddressBits(value, instruction.getOperand(1), INDEX_BIT_POSITION);
+        return value;
     }
 
     private int setThreeOperandValue(Map<String, Integer> table, Instruction instruction, final Opcode opcode) {

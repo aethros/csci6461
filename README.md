@@ -9,12 +9,11 @@ To build:
 
 To run:
 
- - Execute the following command from the root directory of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
+ - Execute the following command from the root directory of this repo. This command assumes you are running on linux, if you are using another platform, please find other commands in the top level of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
 
 ```shell
 java \
     -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5050 \
-    -XX:+ShowCodeDetailsInExceptionMessages \
     --module-path \
         $PWD/architecture/target/classes:$M2_REPO/org/openjfx/javafx-base/17.0.10/javafx-base-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-fxml/17.0.10/javafx-fxml-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-controls/17.0.10/javafx-controls-17.0.10-linux.jar:$M2_REPO/org/openjfx/javafx-graphics/17.0.10/javafx-graphics-17.0.10-linux.jar:$M2_REPO/org/projectlombok/lombok/1.18.30/lombok-1.18.30.jar \
     --add-modules \
@@ -33,8 +32,6 @@ CLI Arguments Explanation:
 java                # Command to start JDK Runtime Environment
     -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=localhost:5050
                     # Java Debug Wire Protocol option, with Debug Transport type `socket`. Address set to local port.
-    -XX:+ShowCodeDetailsInExceptionMessages
-                    # Set exception messages to contain snippets of the code where the Exception was raised.
     --module-path   # A `:` separated list of directories, each directory is a directory of modules.
     --add-modules   # Root modules to resolve in addition to the initial module. <module name> can also be ALL-DEFAULT, ALL-SYSTEM, ALL-MODULE-PATH.
     -classpath      # A `:` separated list of directories, JAR archives, and ZIP archives to search for class files.

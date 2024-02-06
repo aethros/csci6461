@@ -44,10 +44,9 @@ public class AssemblerTest {
         computedEntries.sort(Map.Entry.comparingByKey());
 
         // Arrange Actual
-        byte[] fileBytes = Files.readAllBytes(Paths.get("./src/test/fixtures/program.lst"));
-        String[] fileContent = new String(fileBytes, StandardCharsets.UTF_8).split("\n");
+        List<String> fileLines = Files.readAllLines(Paths.get("./src/test/fixtures/program.lst"));
         Map<Integer, Integer> expectedMap = new HashMap<Integer, Integer>();
-        for (String line : fileContent) {
+        for (String line : fileLines) {
             String[] parts = line.split(" ");
             expectedMap.put(Assembler.octalToDecimal(Integer.parseInt(parts[0])),
                     Assembler.octalToDecimal(Integer.parseInt(parts[1])));

@@ -3,7 +3,6 @@ package edu.gwu.seas.csci.architecture6461.managers;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public final class Assembler {
     public Map<Integer, Integer> assemble(String inputPath, String outputPath) {
         try {
             val filePath = Paths.get(inputPath);
-            val lines = this.getLines(filePath);
+            val lines = Files.readAllLines(filePath).toArray();
             val pair = this.buildSymbolTable(lines);
             val instructions = pair.getKey();
             val symbolTable = pair.getValue();
@@ -62,14 +61,14 @@ public final class Assembler {
      * @param lines The lines of the file.
      * @return A pair of the instructions and the symbol table.
      */
-    public Pair<List<Instruction>, Map<String, Integer>> buildSymbolTable(final String[] lines) {
+    public Pair<List<Instruction>, Map<String, Integer>> buildSymbolTable(final Object[] lines) {
         val symbolTable = new HashMap<String, Integer>();
         val instructions = new ArrayList<Instruction>();
         var address = 0;
 
         for (var line : lines) {
             LOGGER.log(Level.INFO, "Parsing line: {0}", line);
-            val instruction = new Instruction(line);
+            val instruction = new Instruction((String)line);
             instructions.add(instruction); // parse instruction and add to list
 
             if (instruction.hasLabel()) { // load label with address if present
@@ -209,12 +208,6 @@ public final class Assembler {
             i *= 8; // Multiply `i` by 8
         }
         return decimal;
-    }
-
-    private String[] getLines(final Path filePath) throws IOException {
-        val fileBytes = Files.readAllBytes(filePath);
-        val fileContent = new String(fileBytes, StandardCharsets.UTF_8);
-        return fileContent.split("\n");
     }
 
     private int setThreeOperandValue(Map<String, Integer> table, Instruction instruction, final Opcode opcode) {

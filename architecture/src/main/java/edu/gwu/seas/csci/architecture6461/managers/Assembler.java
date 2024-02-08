@@ -3,6 +3,7 @@ package edu.gwu.seas.csci.architecture6461.managers;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +31,6 @@ public final class Assembler {
     private static final int COUNT_BITS = 4;
     private static final int INDEX_REGISTER_BITS = 2;
     private static final int INDIRECT_BITS = 1;
-    private Map<Integer, Integer> programMemory;
 
     /**
      * Assembles a program from a file.
@@ -49,8 +49,7 @@ public final class Assembler {
 
             val listing = this.translate(symbolTable, instructions);
             this.writeProgram(listing, outputPath);
-            this.programMemory = listing;
-            return this.programMemory;
+            return listing;
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "File IO operation failed.\n");
             e.printStackTrace();
@@ -240,8 +239,7 @@ public final class Assembler {
      * @throws IOException If the file cannot be written.
      */
     public void writeProgram(final Map<Integer, Integer> assembled, String path) throws IOException {
-        val outputPath = Files.createDirectories(Paths.get(path).getParent());
-        val outputFile = outputPath.resolve(Paths.get(path).getFileName());
+        val outputFile = this.getOutputFile(path);
         val writer = Files.newBufferedWriter(outputFile, StandardCharsets.UTF_8);
         val entries = new ArrayList<>(assembled.entrySet());
         entries.sort(Map.Entry.comparingByKey());
@@ -253,19 +251,6 @@ public final class Assembler {
             writer.write(string);
         }
         writer.close();
-    }
-
-    /**
-     * Loads the program memory.
-     * 
-     * @return The program memory.
-     */
-    public Map<Integer, Integer> loadProgram() {
-        if (this.programMemory != null) {
-            return this.programMemory;
-        } else {
-            throw new IllegalStateException("Program memory not loaded.");
-        }
     }
 
     /**
@@ -300,6 +285,22 @@ public final class Assembler {
             i *= 8; // Multiply `i` by 8
         }
         return decimal;
+    }
+
+    private Path getOutputFile(String path) throws IOException {
+        Path outputPath;
+        Path outputFile;
+        if (Paths.get(path).toFile().isDirectory()) {
+            outputPath = Files.createDirectories(Paths.get(path));
+            outputFile = outputPath.resolve(Paths.get(path, "assembled/program.lst"));
+            outputFile.getParent().toFile().mkdirs();
+            outputFile.toFile().createNewFile();
+        }
+        else {
+            outputPath = Files.createDirectories(Paths.get(path).getParent());
+            outputFile = outputPath.resolve(Paths.get(path).getFileName());
+        }
+        return outputFile;
     }
 
     private int setAddressRegisterOperands(Map<String, Integer> symbolTable, Instruction instruction, Opcode opcode) {

@@ -1,9 +1,16 @@
 package edu.gwu.seas.csci.architecture6461.managers;
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.logging.Logger;
+
 import lombok.Getter;
+import lombok.val;
 
 public final class SessionManager {
+    private static final Logger LOGGER = Logger.getLogger(SessionManager.class.getName());
     private static SessionManager instance;
+    private boolean programLoaded = false;
 
     @Getter
     private final Assembler assembler = new Assembler();
@@ -19,5 +26,21 @@ public final class SessionManager {
         }
 
         return instance;
+    }
+
+    public void loadProgram(Map<Integer, Integer> assembled) {
+        try {
+            val entries = new ArrayList<>(assembled.entrySet());
+            entries.sort(Map.Entry.comparingByKey());
+            for (Map.Entry<Integer, Integer> entry : entries) {
+                this.controlUnit.getMemory().setValue(entry.getKey(), entry.getValue());
+            }
+            LOGGER.info("Program loaded into memory.");
+            programLoaded = true;
+        } catch (Exception e) { LOGGER.severe(e.getMessage()); }
+    }
+
+    public boolean isProgramLoaded() {
+        return programLoaded;
     }
 }

@@ -1,5 +1,6 @@
 # Assembler Design
 
+Inspiration:
 https://www.d.umn.edu/~gshute/asm/assembler-organization.html
 
 1. Pass 1 Analyzer
@@ -10,22 +11,7 @@ https://www.d.umn.edu/~gshute/asm/assembler-organization.html
     1. Symbol Table
         - An assembly language program contains label definitions that mark the memory locations. The labels can be used elsewhere in the program to refer to the marked locations.
         - The symbol table is a simple table structure whose entries contain memory addresses keyed by the program labels. When the assembler determines the address for a label it adds an entry into the symbol table. When it encounters a use of the label it can look up the address in the symbol table.
-        - The status of a symbol has three flags:
-            - F – the first occurrence of the symbol
-            - A – already defined
-            - D – a new definition
-
-```text
-   4’s (F)   2’s (A)   1’s (D)                  action
-      0         0         0         symACT0: This is a forward reference.  Store LOC in VALUE field of the symbol table and return the previous contents of VALUE field
-      0         0         1         symACT1: A previously used TOKEN is defined for the first time.  Store LOC in VALUE field of the symbol table and return the previous contents of VALUE field
-      0         1         0         symACT2: A previously defined TOKEN is used.  Return the contents of VALUE field.
-      0         1         1         symACT3: A previously defined TOKEN is defined again.  Print “Double Definition Error” and return -1 (0xFFFF)
-      1         0         0         symACT4: TOKEN seen for the first time as a forward reference.  Store LOC in VALUE field and return 0xFFFF.
-      1         0         1         symACT5: TOKEN seen for the first time as a definition.  Store LOC in VALUE field of the symbol table and return 0.
-      1         1         0         N/A
-      1         1         1         N/A
-```
+        - Each symbol is stored into a hash table with a memory address and a symbol name.
 
 2. Pass 2 Translator
     - The primary effort in pass 2 is translating instructions into machine code.
@@ -35,14 +21,9 @@ https://www.d.umn.edu/~gshute/asm/assembler-organization.html
         ```
 
     2. Scanner
-        - The scanner reads lines from the input and loads them into a buffer.
-        - The scanner then combines the characters from a line of input into tokens and returns the **table of tokens** for a given line.
-        - 5 types of tokens:
-            - Number
-            - Variable
-            - Operator
-            - Delimiter
-            - End of line
+        - The scanner reads instructions from the input and loads them into a buffer.
+        - The scanner then parses the tokens from a line of input into values and returns the parsed instruction for a given line.
+        - Each parsed instruction corresponds to a label, an opcode, and several operands.
 
 ## Tasks:
  - Build a user interface (file picker), settings, etc

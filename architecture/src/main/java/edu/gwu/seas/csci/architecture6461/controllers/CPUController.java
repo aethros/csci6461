@@ -8,7 +8,7 @@ import edu.gwu.seas.csci.architecture6461.views.RegisterView;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
-public class ApplicationController implements Initializable {
+public class CPUController implements Initializable {
     @FXML
     private RegisterView programCounterView;
     @FXML
@@ -38,7 +38,7 @@ public class ApplicationController implements Initializable {
 
     private CPU cpu;
 
-    public ApplicationController(CPU cpu) {
+    public CPUController(CPU cpu) {
         this.cpu = cpu;
     }
 

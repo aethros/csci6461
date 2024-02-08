@@ -3,19 +3,19 @@ package edu.gwu.seas.csci.architecture6461.views;
 import java.io.IOException;
 
 import edu.gwu.seas.csci.architecture6461.App;
-import edu.gwu.seas.csci.architecture6461.controllers.ApplicationController;
+import edu.gwu.seas.csci.architecture6461.controllers.CPUController;
 import edu.gwu.seas.csci.architecture6461.models.CPU;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import lombok.val;
 
-public class ApplicationView extends Pane {
+public class CPUView extends Pane {
 
-    private ApplicationController controller;
+    private CPUController controller;
 
-    public ApplicationView(CPU cpu) throws IOException {
-        this.loadFXML(cpu, "app.fxml");
+    public CPUView(CPU cpu) throws IOException {
+        this.loadFXML(cpu, "cpu.fxml");
     }
 
     private void loadFXML(CPU cpu, String fxml) throws IOException {
@@ -24,7 +24,7 @@ public class ApplicationView extends Pane {
         fxmlLoader.setControllerFactory(new Callback<Class<?>, Object>() {
             @Override
             public Object call(Class<?> param) {
-                controller = new ApplicationController(cpu);
+                controller = new CPUController(cpu);
                 return controller;
             }
         });

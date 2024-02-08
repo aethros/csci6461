@@ -1,4 +1,11 @@
-## Team Rules
+# Expectations:
+- Text/Email Responsive
+- Everyone does the same work
+- Be proactive
+- Meet if necessary (2 hr)
+- Try something once
+
+## Design guidelines
 - Meetings will determine design decisions.
 - Small design decisions which do not impact other team members *should be* agreed upon by the developer and one other for sanity check.
 - Disagreements about design decisions will be timeboxed and then decided by a vote.

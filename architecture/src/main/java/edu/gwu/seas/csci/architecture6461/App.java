@@ -12,22 +12,15 @@ import javafx.stage.Stage;
  */
 public final class App extends Application {
 
-    private static Scene appScene;
-
     @Override
     public void start(Stage stage) throws IOException {
-        initApp();
+        Scene appScene = new Scene(new AssemblerView(), 1280, 960);
         stage.setScene(appScene);
         stage.show();
     }
 
     public static void main(String[] args) {
+        System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tc] %4$s: %5$s %6$s%n");
         launch();
-    }
-
-    private static void initApp() throws IOException {
-        // val manager = ProgramManager.getInstance();
-        // appScene = new Scene(new ApplicationView(manager.getCpu()), 1280, 960);
-        appScene = new Scene(new AssemblerView(), 1280, 960);
     }
 }

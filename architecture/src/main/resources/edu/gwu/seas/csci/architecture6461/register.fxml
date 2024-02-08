@@ -38,42 +38,59 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Label fx:id="label" GridPane.columnIndex="0" prefHeight="62.0" prefWidth="31.0" text="GPR">
+                <Label fx:id="label" GridPane.columnIndex="0" prefHeight="62.0" prefWidth="31.0"
+                    text="GPR">
                     <font>
                         <Font size="12.0" />
                     </font>
                 </Label>
-                <Rectangle fx:id="sixteenBit"  fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="sixteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="1" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="fifteenBit"  fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="fifteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="2" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="fourteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="fourteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="3" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="thirteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="thirteenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="4" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="twelveBit"   fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="twelveBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="5" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="elevenBit"   fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="elevenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="6" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="tenBit"      fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="tenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="7" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="nineBit"     fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="nineBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="8" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="eightBit"    fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="eightBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="9" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="sevenBit"    fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="sevenBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="10" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="sixBit"      fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="sixBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="11" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="fiveBit"     fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="fiveBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="12" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="fourBit"     fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="fourBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="13" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="threeBit"    fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="threeBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="14" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="twoBit"      fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="twoBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="15" onMouseClicked="#handleClicked" />
-                <Rectangle fx:id="oneBit"      fill="MEDIUMBLUE" height="70.0" stroke="BLACK" strokeType="INSIDE"
+                <Rectangle fx:id="oneBit" fill="MEDIUMBLUE" height="70.0" stroke="BLACK"
+                    strokeType="INSIDE"
                     width="28.0" GridPane.columnIndex="16" onMouseClicked="#handleClicked" />
                 <Button fx:id="button" mnemonicParsing="false" text="LD"
                     GridPane.columnIndex="17" onAction="#loadValue">

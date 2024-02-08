@@ -9,7 +9,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import lombok.val;
 
-public class AssemblerView extends Pane  {
+public class AssemblerView extends Pane {
 
     private AssemblerController controller;
 

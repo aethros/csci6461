@@ -32,3 +32,6 @@ replay_pid*
 
 # MacOS artifacts
 .DS_Store
+
+# Test assemblies
+architecture/**/assembled/

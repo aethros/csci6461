@@ -4,12 +4,17 @@ csci6461 java cisc cpu vm
 ## Getting Started:
 To build:
 
- - This program uses maven as the build system. Please ensure java JDK and maven are installed and working properly. Then run `mvn -f architecture/pom.xml clean compile package` from the root directory of this repo.
+ - This program uses maven as the build system. Please ensure java JDK and maven are installed and working properly.
+    - JDK: https://adoptium.net/temurin/releases/?variant=openjdk11&package=jdk
+    - Maven: https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.zip
+ - Afterwards you may use the `run.sh` or `run.ps1` script from the console, depending on your platform.
+ - Alternatively you may execute the following command from the root directory of this repo: `mvn -f architecture/pom.xml clean compile package`.
 
 
 To run:
 
- - Execute the following command from the root directory of this repo. This command assumes you are running on linux, if you are using another platform, please find other commands in the top level of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
+ - Run either `run.sh` or `run.ps1` script from the console, depending on your platform.
+ - Alternatively, you may execute the following command from the root directory of this repo. This command assumes you are running on linux, if you are using another platform, please find other commands in the top level of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
 
 ```shell
 java \

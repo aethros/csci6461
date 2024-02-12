@@ -143,7 +143,7 @@ public final class Assembler {
                     break;
                 case "RFS":
                     symbolValue = this.calculateSymbol(symbolTable, instruction);
-                    this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
+                    this.checkOperandBits(instruction.getOperand(0), COUNT_BITS);
 
                     value = this.setOpcodeBits(Opcode.RFS);
                     value |= this.setAddressBits(value, instruction.getOperand(0), symbolValue);
@@ -188,7 +188,7 @@ public final class Assembler {
                     value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
                     break;
                 case "SRC":
-                    value = this.setShiftRotateOperands(symbolTable, instruction, Opcode.ORR);
+                    value = this.setShiftRotateOperands(symbolTable, instruction, Opcode.SRC);
                     break;
                 case "RRC":
                     value = this.setShiftRotateOperands(symbolTable, instruction, Opcode.RRC);
@@ -216,7 +216,13 @@ public final class Assembler {
                     value = this.setOpcodeBits(Opcode.SETCCE);
                     value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
                     break;
-                // TODO: case "TRAP":
+                case "TRAP":
+                    symbolValue = this.calculateSymbol(symbolTable, instruction);
+                    this.checkOperandBits(instruction.getOperand(0), COUNT_BITS);
+
+                    value = this.setOpcodeBits(Opcode.TRAP);
+                    value |= this.setAddressBits(value, instruction.getOperand(0), symbolValue);
+                    break;
                 case "LOC":
                 default:
                     break;
@@ -326,8 +332,8 @@ public final class Assembler {
 
         value = this.setOpcodeBits(opcode);
         value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
-        value |= this.setOperandBits(value, instruction.getOperand(2), AL_BIT_POSITION);
-        value |= this.setOperandBits(value, instruction.getOperand(3), LR_BIT_POSITION);
+        value |= this.setOperandBits(value, instruction.getOperand(3), AL_BIT_POSITION);
+        value |= this.setOperandBits(value, instruction.getOperand(2), LR_BIT_POSITION);
         value |= this.setAddressBits(value, instruction.getOperand(1), symbolValue);
         return value;
     }
@@ -339,7 +345,7 @@ public final class Assembler {
 
         value = this.setOpcodeBits(opcode);
         value |= this.setOperandBits(value, instruction.getOperand(0), REGISTER_BIT_POSITION);
-        value |= this.setAddressBits(value, instruction.getOperand(1), INDEX_BIT_POSITION);
+        value |= this.setOperandBits(value, instruction.getOperand(1), INDEX_BIT_POSITION);
         return value;
     }
 

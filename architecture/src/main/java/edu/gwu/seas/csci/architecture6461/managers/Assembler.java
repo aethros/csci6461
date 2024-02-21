@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.gwu.seas.csci.architecture6461.models.Instruction;
+import edu.gwu.seas.csci.architecture6461.models.AssemblyInstruction;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils.Opcode;
 import javafx.util.Pair;
 import lombok.val;
@@ -22,15 +22,16 @@ import lombok.val;
  */
 public final class Assembler {
     private static final Logger LOGGER = Logger.getLogger(Assembler.class.getName());
-    private static final int REGISTER_BIT_POSITION = 8;
-    private static final int INDEX_BIT_POSITION = 6;
-    private static final int INDIRECT_BIT_POSITION = 5;
-    private static final int AL_BIT_POSITION = 7;
-    private static final int LR_BIT_POSITION = 6;
-    private static final int ADDRESS_BITS = 5;
-    private static final int COUNT_BITS = 4;
-    private static final int INDEX_REGISTER_BITS = 2;
-    private static final int INDIRECT_BITS = 1;
+
+    public static final int REGISTER_BIT_POSITION = 8;
+    public static final int INDEX_BIT_POSITION = 6;
+    public static final int INDIRECT_BIT_POSITION = 5;
+    public static final int AL_BIT_POSITION = 7;
+    public static final int LR_BIT_POSITION = 6;
+    public static final int ADDRESS_BITS = 5;
+    public static final int COUNT_BITS = 4;
+    public static final int INDEX_REGISTER_BITS = 2;
+    public static final int INDIRECT_BITS = 1;
 
     /**
      * Assembles a program from a file.
@@ -63,14 +64,14 @@ public final class Assembler {
      * @param lines The lines of the file.
      * @return A pair of the instructions and the symbol table.
      */
-    public Pair<List<Instruction>, Map<String, Integer>> buildSymbolTable(final Object[] lines) {
+    public Pair<List<AssemblyInstruction>, Map<String, Integer>> buildSymbolTable(final Object[] lines) {
         val symbolTable = new HashMap<String, Integer>();
-        val instructions = new ArrayList<Instruction>();
+        val instructions = new ArrayList<AssemblyInstruction>();
         var address = 0;
 
         for (var line : lines) {
             LOGGER.log(Level.INFO, "Parsing line: {0}", line);
-            val instruction = new Instruction((String)line);
+            val instruction = new AssemblyInstruction((String)line);
             instructions.add(instruction); // parse instruction and add to list
 
             if (instruction.hasLabel()) { // load label with address if present
@@ -94,7 +95,7 @@ public final class Assembler {
      * @param instructions The list of instructions.
      * @return The assembled program.
      */
-    public Map<Integer, Integer> translate(Map<String, Integer> symbolTable, List<Instruction> instructions) {
+    public Map<Integer, Integer> translate(Map<String, Integer> symbolTable, List<AssemblyInstruction> instructions) {
         val assembled = new HashMap<Integer, Integer>();
         var address = 0;
 
@@ -301,6 +302,12 @@ public final class Assembler {
             outputFile = outputPath.resolve(Paths.get(path, "assembled/program.lst"));
             outputFile.getParent().toFile().mkdirs();
             outputFile.toFile().createNewFile();
+
+            // **IGNORE: Do something with the "boolean" value returned. sonarlint(java:S899)**
+            // There is a try/catch around the overall statement, and the return value
+            // simply tells us if a new file was created or not. We don't need to do anything in
+            // cases where file was simply overwritten.
+
         }
         else {
             outputPath = Files.createDirectories(Paths.get(path).getParent());
@@ -309,10 +316,9 @@ public final class Assembler {
         return outputFile;
     }
 
-    private int setAddressRegisterOperands(Map<String, Integer> symbolTable, Instruction instruction, Opcode opcode) {
+    private int setAddressRegisterOperands(Map<String, Integer> symbolTable, AssemblyInstruction instruction, Opcode opcode) {
         int value;
-        Integer symbolValue;
-        symbolValue = this.calculateSymbol(symbolTable, instruction);
+        Integer symbolValue = this.calculateSymbol(symbolTable, instruction);
         this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
         this.checkOperandBits(instruction.getOperand(1), ADDRESS_BITS);
          
@@ -322,7 +328,7 @@ public final class Assembler {
         return value;
     }
 
-    private int setShiftRotateOperands(Map<String, Integer> table, Instruction instruction, Opcode opcode) {
+    private int setShiftRotateOperands(Map<String, Integer> table, AssemblyInstruction instruction, Opcode opcode) {
         int value;
         Integer symbolValue = this.calculateSymbol(table, instruction);
         this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
@@ -338,7 +344,7 @@ public final class Assembler {
         return value;
     }
 
-    private int setTwoOperandValue(Instruction instruction, final Opcode opcode) {
+    private int setTwoOperandValue(AssemblyInstruction instruction, final Opcode opcode) {
         int value;
         this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
         this.checkOperandBits(instruction.getOperand(1), INDEX_REGISTER_BITS);
@@ -349,7 +355,7 @@ public final class Assembler {
         return value;
     }
 
-    private int setThreeOperandValue(Map<String, Integer> table, Instruction instruction, final Opcode opcode) {
+    private int setThreeOperandValue(Map<String, Integer> table, AssemblyInstruction instruction, final Opcode opcode) {
         int value;
         Integer symbolValue = this.calculateSymbol(table, instruction);
         this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
@@ -363,7 +369,7 @@ public final class Assembler {
         return value;
     }
 
-    private int setFourOperandValue(Map<String, Integer> table, Instruction instruction, final Opcode opcode) {
+    private int setFourOperandValue(Map<String, Integer> table, AssemblyInstruction instruction, final Opcode opcode) {
         int value;
         Integer symbolValue = this.calculateSymbol(table, instruction);
         this.checkOperandBits(instruction.getOperand(0), INDEX_REGISTER_BITS);
@@ -396,7 +402,7 @@ public final class Assembler {
         return value; // if no address, just return value
     }
 
-    private int setLocation(int address, Instruction instruction) {
+    private int setLocation(int address, AssemblyInstruction instruction) {
         if (instruction.getOpcode().equals("LOC")) {
             address = instruction.getOperand(0);
         } else {
@@ -405,7 +411,7 @@ public final class Assembler {
         return address;
     }
 
-    private Integer calculateSymbol(Map<String, Integer> table, Instruction instruction) {
+    private Integer calculateSymbol(Map<String, Integer> table, AssemblyInstruction instruction) {
         Integer symbolValue = null;
         if (instruction.operandSymbol()) {
             var symbol = table.get(instruction.getOperandSymbol());

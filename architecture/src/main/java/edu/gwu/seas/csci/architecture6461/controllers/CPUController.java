@@ -2,7 +2,9 @@ package edu.gwu.seas.csci.architecture6461.controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
+import edu.gwu.seas.csci.architecture6461.managers.SessionManager;
 import edu.gwu.seas.csci.architecture6461.models.CPU;
 import edu.gwu.seas.csci.architecture6461.views.RegisterView;
 import javafx.fxml.FXML;
@@ -57,5 +59,7 @@ public class CPUController implements Initializable {
         gpRegister1View.setRegister("gpRegister1", this.cpu.getGpRegister1());
         gpRegister2View.setRegister("gpRegister2", this.cpu.getGpRegister2());
         gpRegister3View.setRegister("gpRegister3", this.cpu.getGpRegister3());
+
+        CompletableFuture.runAsync(() -> SessionManager.getInstance().start());
     }
 }

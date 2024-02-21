@@ -14,7 +14,7 @@ To build:
 To run:
 
  - Run either `run.sh` or `run.ps1` script from the console, depending on your platform.
- - Alternatively, you may execute the following command from the root directory of this repo. This command assumes you are running on linux, if you are using another platform, please find other commands in the top level of this repo. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
+ - Alternatively, you may execute the following command from the root directory of this repo. This command assumes you are running on linux, if you are using another platform, please find other commands in the top level of this repo, or use the run scripts provided. You can then attach to the application over port `5050` to begin debugging. Omit the `-agentlib:...` flag if you do not wish to debug, and simply wish to run the application. Ensure you have defined `$M2_REPO` for your enviornment.
 
 ```shell
 java \

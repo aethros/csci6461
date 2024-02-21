@@ -37,13 +37,13 @@ public class AssemblerTest {
 
         // Arrange Expected
         Assembler assembler = new Assembler();
-        Map<Integer, Integer> assembled = assembler.assemble("./src/test/fixtures/example1.S",
+        Map<Integer, Integer> assembled = assembler.assemble("./src/test/fixtures/example2.S",
                 "./assembled/program.lst");
         List<Entry<Integer, Integer>> computedEntries = new ArrayList<>(assembled.entrySet());
         computedEntries.sort(Map.Entry.comparingByKey());
 
         // Arrange Actual
-        List<String> fileLines = Files.readAllLines(Paths.get("./src/test/fixtures/program.lst"));
+        List<String> fileLines = Files.readAllLines(Paths.get("./src/test/fixtures/program2.lst"));
         Map<Integer, Integer> expectedMap = new HashMap<Integer, Integer>();
         for (String line : fileLines) {
             String[] parts = line.split(" ");

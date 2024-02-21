@@ -28,7 +28,17 @@ public final class SessionManager {
         return instance;
     }
 
+    public void start() {
+        if (programLoaded) {
+            this.controlUnit.start();
+        } else {
+            throw new IllegalStateException("No program loaded into memory.");
+        }
+    }
+
     public void loadProgram(Map<Integer, Integer> assembled) {
+        this.controlUnit.reset();
+
         try {
             val entries = new ArrayList<>(assembled.entrySet());
             entries.sort(Map.Entry.comparingByKey());

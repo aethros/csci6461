@@ -2,6 +2,7 @@ package edu.gwu.seas.csci.architecture6461.models;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import lombok.Getter;
 import lombok.val;
 
 public class Register {
@@ -10,8 +11,12 @@ public class Register {
     private int maskCache;
     private int size;
 
-    protected Register(int size) {
+    @Getter
+    private String name;
+
+    protected Register(int size, String name) {
         this.maskCache = 0;
+        this.name = name;
         this.size = size;
         value = new SimpleIntegerProperty(0);
     }

@@ -19,6 +19,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.stage.FileChooser.ExtensionFilter;
 
 public class AssemblerController implements Initializable {
     private static final Logger LOGGER = Logger.getLogger(AssemblerController.class.getName());
@@ -56,6 +57,33 @@ public class AssemblerController implements Initializable {
         this.launchSimulator();
     }
 
+    public void selectFile(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage primaryStage = (Stage) source.getScene().getWindow();
+        FileChooser fileChooser = new FileChooser();
+        ExtensionFilter asmFilter = new ExtensionFilter("Assembly files (*.S, *.s, *.asm, *.ASM)", "*.S", "*.s", "*.asm", "*.ASM");
+        ExtensionFilter extFilter = new ExtensionFilter("All files (*.*)", "*.*");
+        fileChooser.getExtensionFilters().addAll(asmFilter, extFilter);
+        File file = fileChooser.showOpenDialog(primaryStage);
+        if (file != null) {
+            filePath.setText(file.getAbsolutePath());
+        }
+    }
+
+    private void handleAssemble(String path, File file) {
+        this.assembleButton.setDisable(true);
+        this.selectButton.setDisable(true);
+        this.filePath.setDisable(true);
+
+        var assembled = SessionManager.getInstance().getAssembler().assemble(file.getAbsolutePath(), file.getParent());
+        if (assembled != null && !assembled.isEmpty()) {
+            LOGGER.log(Level.INFO, "File assembled successfully: {0}", path);
+            SessionManager.getInstance().loadProgram(assembled);
+        } else {
+            LOGGER.log(Level.WARNING, "File could not be assembled: {0}", path);
+        }
+    }
+
     private void launchSimulator() {
         if (SessionManager.getInstance().isProgramLoaded()) {
             // Close the current window.
@@ -76,34 +104,6 @@ public class AssemblerController implements Initializable {
             this.assembleButton.setDisable(false);
             this.selectButton.setDisable(false);
             this.filePath.setDisable(false);
-        }
-    }
-
-    public void selectFile(ActionEvent event) {
-        Node source = (Node) event.getSource();
-        Stage primaryStage = (Stage) source.getScene().getWindow();
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter asmFilter = new FileChooser.ExtensionFilter("Assembly files (*.S, *.s, *.asm, *.ASM)", "*.S", "*.s", "*.asm", "*.ASM");
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("All files (*.*)", "*.*");
-        fileChooser.getExtensionFilters().add(asmFilter);
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showOpenDialog(primaryStage);
-        if (file != null) {
-            filePath.setText(file.getAbsolutePath());
-        }
-    }
-
-    private void handleAssemble(String path, File file) {
-        this.assembleButton.setDisable(true);
-        this.selectButton.setDisable(true);
-        this.filePath.setDisable(true);
-
-        var assembled = SessionManager.getInstance().getAssembler().assemble(file.getAbsolutePath(), file.getParent());
-        if (assembled != null && assembled.size() > 0) {
-            LOGGER.log(Level.INFO, "File assembled successfully: {0}", path);
-            SessionManager.getInstance().loadProgram(assembled);
-        } else {
-            LOGGER.log(Level.WARNING, "File could not be assembled: {0}", path);
         }
     }
 }

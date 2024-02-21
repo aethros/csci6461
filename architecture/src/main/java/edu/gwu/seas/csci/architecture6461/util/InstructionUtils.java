@@ -3,11 +3,6 @@ package edu.gwu.seas.csci.architecture6461.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import edu.gwu.seas.csci.architecture6461.models.CPU;
-import edu.gwu.seas.csci.architecture6461.models.Memory;
-import edu.gwu.seas.csci.architecture6461.models.Register;
-import lombok.val;
-
 public abstract class InstructionUtils {
     //// 0b  000000 00 00 0 00000
     ////       ^    ^   ^ ^   ^
@@ -16,8 +11,11 @@ public abstract class InstructionUtils {
     public static final int OPCODE_MASK            = 0xFC00; // 111111 00 00 0 00000
     public static final int GP_REGISTER_MASK       = 0x0300; // 000000 11 00 0 00000
     public static final int INDEX_REGISTER_MASK    = 0x00C0; // 000000 00 11 0 00000
+    public static final int AL_MASK                = 0x0080; // 000000 00 10 0 00000
+    public static final int LR_MASK                = 0x0040; // 000000 00 01 0 00000
     public static final int INDIRECT_MASK          = 0x0020; // 000000 00 00 1 00000
     public static final int ADDRESS_MASK           = 0x001F; // 000000 00 00 0 11111
+    public static final int COUNT_BITS             = 0x000F; // 000000 00 00 0 01111
 
     public enum Opcode {
         LDR, STR, LDA, JZ, JNE, JCC, JMA, JSR, RFS, SOB, JGE, LDX, STX, AMR, SMR,
@@ -151,91 +149,11 @@ public abstract class InstructionUtils {
     }
 
     public static Opcode opcodeFromInstruction(int instruction) {
-        int maskedInstruction = maskInstruction(instruction);
+        int maskedInstruction = InstructionUtils.maskInstruction(instruction);
         int opcodeBytes = maskedInstruction >>> 10;
         // the opcode bytes need to do an unsigned right shift (>>>)
         // 10 places (highest 6 bits of 16 [16 - 6 = 10])
         return Opcode.fromInteger(opcodeBytes);
-    }
-
-    public static Register indexRegisterFromInstruction(CPU cpu, int instruction) {
-        int maskedInstruction = maskInstruction(instruction);
-        int registerBytes = (maskedInstruction >>> 6) & 0b011;
-        // the register bytes need to do an unsigned right shift (>>>)
-        // 6 places (1 place past i bit and 5 places past address bits)
-        // and then they need an and (&) with lower 4 bits to get their
-        // binary value.
-        switch (registerBytes) {
-            case 0b01:
-                return cpu.getIndexRegister1();
-            case 0b10:
-                return cpu.getIndexRegister2();
-            case 0b11:
-                return cpu.getIndexRegister3();
-            case 0b00:
-            default:
-                return null;
-        }
-    }
-
-    public static Register gpRegisterFromInstruction(CPU cpu, int instruction) {
-        int maskedInstruction = maskInstruction(instruction);
-        int registerBytes = (maskedInstruction >>> 8) & 0b011;
-        // the register bytes need to do an unsigned right shift (>>>)
-        // 6 places (1 place past i bit and 5 places past address bits)
-        // and then they need an and (&) with lower 4 bits to get their
-        // binary value.
-        switch (registerBytes) {
-            case 0b00:
-                return cpu.getGpRegister0();
-            case 0b01:
-                return cpu.getGpRegister1();
-            case 0b10:
-                return cpu.getGpRegister2();
-            case 0b11:
-                return cpu.getGpRegister3();
-            default:
-                return null;
-        }
-    }
-
-    public static int addressFromInstruction(CPU cpu, Memory memory, int instruction) {
-        int ea;
-        val maskedInstruction = maskInstruction(instruction);
-        val i = (maskedInstruction & INDIRECT_MASK) > 0;
-        val ix = (maskedInstruction & INDEX_REGISTER_MASK) > 0;
-        val address = InstructionUtils.getAddressBits(maskedInstruction);
-        val indexRegister = InstructionUtils.indexRegisterFromInstruction(cpu, maskedInstruction);
-
-        if (!i) {
-            // NO indirect addressing
-            if (!ix) {
-                ea = address;
-            } else {
-                ea = indexRegister.getValue() + address;
-                // that is, the IX field has an
-                // index register number, the contents of that register are
-                // added to the contents of the address field
-            }
-        } else {
-            if (!ix) {
-                // indirect addressing, but NO indexing
-                ea = memory.getValue(address);
-                // It helps to think in terms of a
-                // pointer where the address field has the location of the EA
-                // in memory
-            } else {
-                // both indirect addressing and indexing
-                ea = memory.getValue(indexRegister.getValue() + address);
-                // another way to think of this is take the EA computed without
-                // indirections and use that as the location of where the EA is stored.
-            }
-        }
-        return ea;
-    }
-
-    public static int getAddressBits(int instruction) {
-        return ADDRESS_MASK & maskInstruction(instruction);
     }
 
     /**

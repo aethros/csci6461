@@ -54,7 +54,7 @@ public class InstructionTest {
 
     @Test
     public void testInstruction() {
-        Instruction instr = new Instruction(instruction);
+        AssemblyInstruction instr = new AssemblyInstruction(instruction);
         Assert.assertEquals(label, instr.getLabel());
         Assert.assertEquals(opcode, instr.getOpcode());
         Assert.assertEquals(operandSymbol, instr.getOperandSymbol());

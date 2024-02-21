@@ -75,8 +75,8 @@ public class RegisterController implements Initializable {
         this.register = register;
         this.bitSet = new BitSet(this.register.getSize());
         this.bitSet.set(0, this.register.getSize(), false);
-        this.initializeView();
         this.register.valueProperty().addListener(this::registerChangeEventListener);
+        this.initializeView();
     }
 
     /**

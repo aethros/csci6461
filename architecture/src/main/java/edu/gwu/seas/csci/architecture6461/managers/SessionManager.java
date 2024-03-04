@@ -28,11 +28,12 @@ public final class SessionManager {
         return instance;
     }
 
-    public void start() {
-        if (programLoaded) {
+    public void start(boolean startFromPanel) {
+        if (startFromPanel || programLoaded) {
             this.controlUnit.start();
         } else {
-            throw new IllegalStateException("No program loaded into memory.");
+            LOGGER.warning("Start blocked, no program loaded into memory.");
+            this.controlUnit.reset();
         }
     }
 

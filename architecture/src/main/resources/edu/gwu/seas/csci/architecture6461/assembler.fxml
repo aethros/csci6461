@@ -33,6 +33,7 @@
              </padding>
           </HBox>
           <Button fx:id="assembleButton" text="Assemble &amp; Load" onAction="#assembleAndLoad"/>
+          <Button mnemonicParsing="false" text="Self-Program Mode (Skip Assembly)" onAction="#load"/>
        </children>
        <padding>
           <Insets bottom="10.0" top="10.0" />

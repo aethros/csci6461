@@ -9,6 +9,7 @@ import edu.gwu.seas.csci.architecture6461.models.Memory;
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import edu.gwu.seas.csci.architecture6461.models.MachineInstruction.Operand;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils;
+import edu.gwu.seas.csci.architecture6461.util.InstructionUtils.ConditionCode;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils.MachineFaultCode;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils.Opcode;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import lombok.val;
 
 public final class ControlUnit {
     private static final Logger LOGGER = Logger.getLogger(ControlUnit.class.getName());
+    private static final String LOG_JUMP = "Jumped to memory address {0}.";
 
     @Getter
     private Memory memory = Memory.getInstance();
@@ -52,6 +54,9 @@ public final class ControlUnit {
      * Executes a single step of the Control Unit.
      */
     public void singleStep() {
+        // Check Instruction Cache
+        // TODO: Implement Cache
+
         // Fetch
         this.fetch(
             this.cpu.getMemoryAddressRegister(),
@@ -64,15 +69,6 @@ public final class ControlUnit {
 
         // Execute Instruction
         this.executeInstruction(instruction);
-    }
-
-    /**
-     * Sets the running state of the Control Unit.
-     *
-     * @param running The running state of the Control Unit.
-     */
-    public void setRunning(boolean running) {
-        this.isRunning = running;
     }
 
     /**
@@ -117,6 +113,10 @@ public final class ControlUnit {
 
         if (code == Opcode.HLT) {
             return this.decodeHaltInstruction();
+        } else if (Opcode.toInteger(code) == 63) {
+            LOGGER.log(Level.INFO, "Decoded illegal instruction: {0}.", maskedInstruction);
+            this.cpu.getMachineFaultRegister().setValue(MachineFaultCode.toInteger(MachineFaultCode.ILLEGALOPERATIONCODE));
+            return new MachineInstruction(null, maskedInstruction);
         } else {
             return this.decodeInstr(maskedInstruction, code);
         }
@@ -132,29 +132,344 @@ public final class ControlUnit {
         Opcode code = instruction.getOpcode();
 
         switch (code) {
-            case LDR: {
-                Register register = this.getRegister(instruction);
-                int address = this.getEffectiveAddress(instruction);
-
-                register.setValue(this.memory.getValue(address));
-                LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into register %s.", register.getValue(), address, register.getName()));
-            }
+            case LDR: this.LDR(instruction);
                 break;
-            case STR: {
-                Register register = this.getRegister(instruction);
-                int address = this.getEffectiveAddress(instruction);
-
-                this.memory.setValue(address, register.getValue());
-                LOGGER.log(Level.INFO, String.format("Stored value %d from register %s into memory address %d.", register.getValue(), register.getName(), address));
-            }
+            case STR: this.STR(instruction);
                 break;
-            case HLT: {
-                LOGGER.info("Halting the CPU.");
-                this.isRunning = false;
-            }
+            case LDA: this.LDA(instruction);
+                break;
+            case LDX: this.LDX(instruction);
+                break;
+            case STX: this.STX(instruction);
+                break;
+            case SETCCE: this.SETCCE(instruction);
+                break;
+            case JZ: this.JZ(instruction);
+                break;
+            case JNE: this.JNE(instruction);
+                break;
+            case JCC: this.JCC(instruction);
+                break;
+            case JMA: this.JMA(instruction);
+                break;
+            case JSR: this.JSR(instruction);
+                break;
+            case RFS: this.RFS(instruction);
+                break;
+            case SOB: this.SOB(instruction);
+                break;
+            case JGE: this.JGE(instruction);
+                break;
+            case AMR: this.AMR(instruction);
+                break;
+            case SMR: this.SMR(instruction);
+                break;
+            case AIR: this.AIR(instruction);
+                break;
+            case SIR: this.SIR(instruction);
+                break;
+            case MLT: this.MLT(instruction);
+                break;
+            case DVD: this.DVD(instruction);
+                break;
+            case TRR: this.TRR(instruction);
+                break;
+            case AND: this.AND(instruction);
+                break;
+            case ORR: this.ORR(instruction);
+                break;
+            case NOT: this.NOT(instruction);
+                break;
+            case SRC: this.SRC(instruction);
+                break;
+            case RRC: this.RRC(instruction);
+                break;
+            case IN: this.IN(instruction);
+                break;
+            case OUT: this.OUT(instruction);
+                break;
+            case HLT: this.HLT(false);
                 break;
             default:
                 break;
+        }
+    }
+
+    public void HLT(boolean silent) {
+        if (!silent) {
+            LOGGER.info("Halting the CPU.");
+        }
+        this.isRunning = false;
+    }
+
+    private void OUT(MachineInstruction instruction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'OUT'");
+    }
+
+    private void IN(MachineInstruction instruction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'IN'");
+    }
+
+    private void RRC(MachineInstruction instruction) {
+        Register r = this.getGpRegister(instruction, Operand.R);
+        int count = instruction.getOperand(Operand.COUNT);
+        int left = instruction.getOperand(Operand.LR);
+        boolean logicalRotate = instruction.getOperand(Operand.AL) > 0; // Otherwise, arithmetic rotate
+        int value = r.getValue();
+        if (logicalRotate) {
+            if (left > 0) {
+                // TODO: Left rotate logical
+            } else {
+                // TODO: Right rotate logical
+            }
+        } else {
+            if (left > 0) {
+                // Left rotate arithmetic
+            } else {
+                // Right rotate arithmetic
+            }
+        }
+        r.setValue(value);
+        LOGGER.log(Level.INFO, String.format("Rotated value %d in register %s by %d bits to the %s.", r.getValue(), r.getName(), count, (left > 0) ? "left" : "right"));
+    }
+
+    private void SRC(MachineInstruction instruction) {
+        Register r = this.getGpRegister(instruction, Operand.R);
+        int count = instruction.getOperand(Operand.COUNT);
+        int left = instruction.getOperand(Operand.LR);
+        boolean logicalShift = instruction.getOperand(Operand.AL) > 0; // Otherwise, arithmetic shift
+        int value = r.getValue();
+        if (logicalShift) {
+            if (left > 0) {
+                // TODO: Left shift logical
+            } else {
+                // TODO: Right shift logical
+            }
+        } else {
+            if (left > 0) {
+                // TODO: Left shift arithmetic
+            } else {
+                // TODO: Right shift arithmetic
+            }
+        }
+        r.setValue(value);
+        LOGGER.log(Level.INFO, String.format("Shifted value %d in register %s by %d bits to the %s.", r.getValue(), r.getName(), count, (left > 0) ? "left" : "right"));
+    }
+
+    private void NOT(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        rx.setValue(~rx.getValue());
+        LOGGER.log(Level.INFO, String.format("Bitwise NOTed value %d and stored the result in register %s.", rx.getValue(), rx.getName()));
+    }
+
+    private void ORR(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        Register ry = this.getGpRegister(instruction, Operand.RY);
+        rx.setValue(rx.getValue() | ry.getValue());
+        LOGGER.log(Level.INFO, String.format("Bitwise ORed values %d and %d and stored the result in register %s.", rx.getValue(), ry.getValue(), rx.getName()));
+    }
+
+    private void AND(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        Register ry = this.getGpRegister(instruction, Operand.RY);
+        rx.setValue(rx.getValue() & ry.getValue());
+        LOGGER.log(Level.INFO, String.format("Bitwise ANDed values %d and %d and stored the result in register %s.", rx.getValue(), ry.getValue(), rx.getName()));
+    }
+
+    private void TRR(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        Register ry = this.getGpRegister(instruction, Operand.RY);
+        if (rx.getValue() == ry.getValue()) {
+            this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() | ConditionCode.toInteger(ConditionCode.EQUALORNOT));
+        } else {
+            this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() & ~ConditionCode.toInteger(ConditionCode.EQUALORNOT));
+        }
+        LOGGER.log(Level.INFO, String.format("Compared values %d and %d and set the condition code 'EQUALORNOT' to %b.", rx.getValue(), ry.getValue(), (rx.getValue() == ry.getValue())));
+    }
+
+    private void DVD(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        Register ry = this.getGpRegister(instruction, Operand.RY);
+        Register rxP1 = this.getrxP1Register(rx); // RX + 1
+        int quotient = rx.getValue() / ry.getValue();
+        int remainder = rx.getValue() % ry.getValue();
+        rx.setValue(quotient);
+        rxP1.setValue(remainder);
+        if (ry.getValue() == 0) {
+            this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() | ConditionCode.toInteger(ConditionCode.DIVZERO));
+        }
+        LOGGER.log(Level.INFO, String.format("Divided values %d by %d and stored the quotient in register %s and the remainder in register %s.", rx.getValue(), ry.getValue(), rx.getName(), rxP1.getName()));
+    }
+
+    private void MLT(MachineInstruction instruction) {
+        Register rx = this.getGpRegister(instruction, Operand.RX);
+        Register ry = this.getGpRegister(instruction, Operand.RY);
+        Register rxP1 = this.getrxP1Register(rx); // RX + 1
+        int value = rx.getValue() * ry.getValue();
+        int low = value & 0xFFFF;
+        int high = (value & 0xFFFF0000) >> 16;
+        rx.setValue(high);
+        rxP1.setValue(low);
+        if (value < rx.getValue() || value < ry.getValue()) {
+            this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() | ConditionCode.toInteger(ConditionCode.OVERFLOW));
+        }
+        LOGGER.log(Level.INFO, String.format("Multiplied values %d and %d and stored the result in registers %s and %s.", rx.getValue(), ry.getValue(), rx.getName(), rxP1.getName()));
+    }
+
+    private void SIR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int immediate = instruction.getAddress();
+        register.setValue(register.getValue() - immediate);
+        LOGGER.log(Level.INFO, String.format("Subtracted immediate value %d from register %s.", immediate, register.getName()));
+    }
+
+    private void AIR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int immediate = instruction.getAddress();
+        register.setValue(register.getValue() + immediate);
+        LOGGER.log(Level.INFO, String.format("Added immediate value %d to register %s.", immediate, register.getName()));
+    }
+
+    private void SMR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(register.getValue() - this.memory.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Subtracted value %d from memory address %d from register %s.", this.memory.getValue(address), address, register.getName()));
+    }
+
+    private void AMR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(register.getValue() + this.memory.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Added value %d from memory address %d to register %s.", this.memory.getValue(address), address, register.getName()));
+    }
+
+    private void JGE(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        if (register.getValue() >= 0) {
+            this.cpu.getProgramCounter().setValue(address);
+            LOGGER.log(Level.INFO, LOG_JUMP, address);
+        }
+    }
+
+    private void SOB(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(register.getValue() - 1);
+        if (register.getValue() > 0) {
+            this.cpu.getProgramCounter().setValue(address);
+            LOGGER.log(Level.INFO, LOG_JUMP, address);
+        }
+    }
+
+    private void RFS(MachineInstruction instruction) {
+        int returnCode = instruction.getOperand(Operand.IMMED);
+        this.cpu.getProgramCounter().setValue(this.cpu.getGpRegister3().getValue());
+        this.cpu.getGpRegister0().setValue(returnCode);
+        LOGGER.log(Level.INFO, "Returned from subroutine to memory address {0}.", this.cpu.getProgramCounter().getValue());
+    }
+
+    private void JSR(MachineInstruction instruction) {
+        int pc = this.cpu.getProgramCounter().getValue();
+        int address = this.getEffectiveAddress(instruction);
+        this.cpu.getGpRegister3().setValue(pc + 1);
+        this.cpu.getProgramCounter().setValue(address);
+        LOGGER.log(Level.INFO, LOG_JUMP, address);
+    }
+
+    private void JMA(MachineInstruction instruction) {
+        int address = this.getEffectiveAddress(instruction);
+        this.cpu.getProgramCounter().setValue(address);
+        LOGGER.log(Level.INFO, LOG_JUMP, address);
+    }
+
+    private void JCC(MachineInstruction instruction) {
+        Register cc = this.cpu.getConditionCode();
+        int address = this.getEffectiveAddress(instruction);
+        // R is the bit position of the condition code to check
+        if ((cc.getValue() & (1 << instruction.getOperand(Operand.R))) > 0) {
+            this.cpu.getProgramCounter().setValue(address);
+            LOGGER.log(Level.INFO, LOG_JUMP, address);
+        }
+    }
+
+    private void JNE(MachineInstruction instruction) {
+        Register register = this.cpu.getConditionCode();
+        int address = this.getEffectiveAddress(instruction);
+        if ((register.getValue() & ConditionCode.toInteger(ConditionCode.EQUALORNOT)) == 0) {
+            this.cpu.getProgramCounter().setValue(address);
+            LOGGER.log(Level.INFO, LOG_JUMP, address);
+        }
+    }
+
+    private void JZ(MachineInstruction instruction) {
+        Register register = this.cpu.getConditionCode();
+        int address = this.getEffectiveAddress(instruction);
+        if ((register.getValue() & ConditionCode.toInteger(ConditionCode.EQUALORNOT)) > 0) {
+            this.cpu.getProgramCounter().setValue(address);
+            LOGGER.log(Level.INFO, LOG_JUMP, address);
+        }
+    }
+
+    private void SETCCE(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int cc = this.cpu.getConditionCode().getValue();
+        if (register.getValue() == 0) {
+            this.cpu.getConditionCode().setValue(cc | ConditionCode.toInteger(ConditionCode.EQUALORNOT));
+        } else {
+            this.cpu.getConditionCode().setValue(cc & ~ConditionCode.toInteger(ConditionCode.EQUALORNOT));
+        }
+        LOGGER.log(Level.INFO, "Set condition code 'EQUALORNOT' to {0}.", (register.getValue() == 0));
+    }
+
+    private void STX(MachineInstruction instruction) {
+        Register register = this.getIndexRegister(instruction);
+        int address = this.getEffectiveAddress(instruction);
+        this.memory.setValue(address, register.getValue());
+        LOGGER.log(Level.INFO, String.format("Stored value %d from index register %s into memory address %d.", register.getValue(), register.getName(), address));
+    }
+
+    private void LDX(MachineInstruction instruction) {
+        Register register = this.getIndexRegister(instruction);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(this.memory.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into index register %s.", register.getValue(), address, register.getName()));
+    }
+
+    private void LDA(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(address);
+        LOGGER.log(Level.INFO, String.format("Loaded address %d into register %s.", address, register.getName()));
+    }
+
+    private void STR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        this.memory.setValue(address, register.getValue());
+        LOGGER.log(Level.INFO, String.format("Stored value %d from register %s into memory address %d.", register.getValue(), register.getName(), address));
+    }
+
+    private void LDR(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int address = this.getEffectiveAddress(instruction);
+        register.setValue(this.memory.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into register %s.", register.getValue(), address, register.getName()));
+    }
+
+    private Register getrxP1Register(Register rx) {
+        switch (rx.getName()) {
+            case "R0":
+                return this.cpu.getGpRegister1();
+            case "R2":
+                return this.cpu.getGpRegister3();
+            case "R1":
+            case "R3":
+            default:
+                return null;
         }
     }
 
@@ -186,7 +501,7 @@ public final class ControlUnit {
         val i = instruction.getOperand(Operand.I) > 0;
         val ix = instruction.getOperand(Operand.IX) > 0;
         val address = instruction.getAddress();
-        val indexRegister = this.indexRegisterFromInstruction(instruction);
+        val indexRegister = this.getIndexRegister(instruction);
 
         if (!i) {
             // NO indirect addressing
@@ -215,8 +530,8 @@ public final class ControlUnit {
         return ea;
     }
 
-    private Register getRegister(MachineInstruction instruction) {
-        val num = instruction.getOperand(Operand.R);
+    private Register getGpRegister(MachineInstruction instruction, Operand operand) {
+        val num = instruction.getOperand(operand);
         switch (num) {
             case 0:
                 return this.cpu.getGpRegister0();
@@ -231,7 +546,7 @@ public final class ControlUnit {
         }
     }
 
-    private Register indexRegisterFromInstruction(MachineInstruction instruction) {
+    private Register getIndexRegister(MachineInstruction instruction) {
         val num = instruction.getOperand(Operand.IX);
         switch (num) {
             case 1:

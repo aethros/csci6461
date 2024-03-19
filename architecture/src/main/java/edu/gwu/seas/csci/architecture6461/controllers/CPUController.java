@@ -85,7 +85,7 @@ public class CPUController implements Initializable {
 
     public void loadButtonEvent(ActionEvent event) {
         CompletableFuture.runAsync(() -> {
-            SessionManager.getInstance().getControlUnit().setRunning(false);
+            SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = SessionManager.getInstance().getControlUnit().getMemory().getValue(addr);
             this.cpu.getMemoryBufferRegister().setValue(data);
@@ -96,7 +96,7 @@ public class CPUController implements Initializable {
 
     public void loadPlusButtonEvent(ActionEvent event) {
         CompletableFuture.runAsync(() -> {
-            SessionManager.getInstance().getControlUnit().setRunning(false);
+            SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = SessionManager.getInstance().getControlUnit().getMemory().getValue(addr);
             this.cpu.getMemoryBufferRegister().setValue(data);
@@ -108,7 +108,7 @@ public class CPUController implements Initializable {
 
     public void storeButtonEvent(ActionEvent event) {
         CompletableFuture.runAsync(() -> {
-            SessionManager.getInstance().getControlUnit().setRunning(false);
+            SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = this.cpu.getMemoryBufferRegister().getValue();
             SessionManager.getInstance().getControlUnit().getMemory().setValue(addr, data);
@@ -119,7 +119,7 @@ public class CPUController implements Initializable {
 
     public void storePlusButtonEvent(ActionEvent event) {
         CompletableFuture.runAsync(() -> {
-            SessionManager.getInstance().getControlUnit().setRunning(false);
+            SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = this.cpu.getMemoryBufferRegister().getValue();
             SessionManager.getInstance().getControlUnit().getMemory().setValue(addr, data);
@@ -141,6 +141,6 @@ public class CPUController implements Initializable {
 
     public void haltButtonEvent(ActionEvent event) {
         LOGGER.info("Halting Program");
-        CompletableFuture.runAsync(() -> SessionManager.getInstance().getControlUnit().setRunning(false));
+        CompletableFuture.runAsync(() -> SessionManager.getInstance().getControlUnit().HLT(true));
     }
 }

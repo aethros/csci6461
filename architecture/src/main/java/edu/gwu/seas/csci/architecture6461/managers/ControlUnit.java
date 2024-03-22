@@ -28,32 +28,53 @@ public final class ControlUnit {
         // No need to initialize anything here
     }
 
+    /**
+     * Resets the Control Unit.
+     */
     public void reset() {
         LOGGER.info("Resetting the Control Unit.");
         this.cpu.reset();
         this.memory.initialize(2048);
     }
 
+    /**
+     * Starts the Control Unit.
+     */
     public void start() {
         LOGGER.info("Starting the Control Unit.");
         this.isRunning = true;
-        while (isRunning) {
-            // Fetch
-            this.fetch(
-                this.cpu.getMemoryAddressRegister(),
-                this.cpu.getProgramCounter(),
-                this.cpu.getMemoryBufferRegister(),
-                this.cpu.getInstructionRegister());
-
-            // Decode
-            var instruction = this.decode(this.cpu.getInstructionRegister());
-
-            // Execute Instruction
-            this.executeInstruction(instruction);
+        while (this.isRunning) {
+            this.singleStep();
         }
     }
 
-    
+    /**
+     * Executes a single step of the Control Unit.
+     */
+    public void singleStep() {
+        // Fetch
+        this.fetch(
+            this.cpu.getMemoryAddressRegister(),
+            this.cpu.getProgramCounter(),
+            this.cpu.getMemoryBufferRegister(),
+            this.cpu.getInstructionRegister());
+
+        // Decode
+        var instruction = this.decode(this.cpu.getInstructionRegister());
+
+        // Execute Instruction
+        this.executeInstruction(instruction);
+    }
+
+    /**
+     * Sets the running state of the Control Unit.
+     *
+     * @param running The running state of the Control Unit.
+     */
+    public void setRunning(boolean running) {
+        this.isRunning = running;
+    }
+
     /**
      * Fetches an instruction from memory and updates the necessary registers.
      *
@@ -84,6 +105,12 @@ public final class ControlUnit {
         return IR.getValue();
     }
 
+    /**
+     * Decodes an instruction and returns the Machine Instruction.
+     *
+     * @param IR The Instruction Register.
+     * @return The Machine Instruction.
+     */
     public MachineInstruction decode(final Register IR) {
         val maskedInstruction = InstructionUtils.maskInstruction(IR.getValue());
         val code = InstructionUtils.opcodeFromInstruction(maskedInstruction);
@@ -95,6 +122,11 @@ public final class ControlUnit {
         }
     }
 
+    /**
+     * Executes an instruction.
+     *
+     * @param instruction The Machine Instruction to execute.
+     */
     public void executeInstruction(MachineInstruction instruction) {
         LOGGER.log(Level.INFO, "Executing instruction: {0}.", instruction.toString());
         Opcode code = instruction.getOpcode();

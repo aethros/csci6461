@@ -40,6 +40,11 @@ public class AssemblerController implements Initializable {
         // No initialization needed.
     }
 
+    public void load(ActionEvent event) {
+        LOGGER.info("Loading the main window.");
+        this.launchSimulator(true);
+    }
+
     public void assembleAndLoad(ActionEvent event) {
         String path = filePath.getText();
         if (path == null || path.isEmpty()) {
@@ -54,7 +59,7 @@ public class AssemblerController implements Initializable {
         LOGGER.log(Level.INFO, "Assembling file: {0}", path);
 
         this.handleAssemble(path, file);
-        this.launchSimulator();
+        this.launchSimulator(false);
     }
 
     public void selectFile(ActionEvent event) {
@@ -84,8 +89,8 @@ public class AssemblerController implements Initializable {
         }
     }
 
-    private void launchSimulator() {
-        if (SessionManager.getInstance().isProgramLoaded()) {
+    private void launchSimulator(boolean skipAssemble) {
+        if (skipAssemble || SessionManager.getInstance().isProgramLoaded()) {
             // Close the current window.
             Scene scene = this.assembleButton.getScene();
             Window window = scene.getWindow();

@@ -1,11 +1,15 @@
 package edu.gwu.seas.csci.architecture6461.models;
 
+import java.util.logging.Logger;
+
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import lombok.Getter;
 import lombok.val;
 
 public class Register {
+    private static final Logger LOGGER = Logger.getLogger(Register.class.getName());
+
     public static final int MAX_SIZE = 16;
     private IntegerProperty value;
     private int maskCache;
@@ -34,6 +38,8 @@ public class Register {
         valueCheck(value);
         val maskedValue = this.getMask() & value;
         this.value.set(maskedValue);
+
+        LOGGER.info(String.format("Register %s set to %d.", this.name, maskedValue));
     }
 
     /**

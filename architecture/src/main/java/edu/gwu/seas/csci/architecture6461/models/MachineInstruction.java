@@ -14,7 +14,7 @@ public class MachineInstruction {
         ADDRESS_REGISTER, SHIFT_ROTATE, TWO_OPERAND, THREE_OPERAND, FOUR_OPERAND, SPECIAL_PURPOSE
     }
     public enum Operand {
-        R, RX, RY, IX, I, ADDRESS, IMMED, COUNT, CC, AL, LR, DEVID, CODE
+        R, RX, RY, IX, I, ADDRESS, IMMED, COUNT, AL, LR
     }
 
     private Opcode opcode;
@@ -126,7 +126,6 @@ public class MachineInstruction {
         this.operands.put(Operand.I, (this.instruction & InstructionUtils.INDIRECT_MASK) >>> Assembler.INDIRECT_BIT_POSITION);
         this.operands.put(Operand.ADDRESS, this.instruction & InstructionUtils.ADDRESS_MASK);
     }
-
 
     private void setSpecialPurposeOperands() {
         switch (this.opcode) {

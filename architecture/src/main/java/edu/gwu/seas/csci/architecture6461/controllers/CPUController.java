@@ -87,7 +87,7 @@ public class CPUController implements Initializable {
         CompletableFuture.runAsync(() -> {
             SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
-            int data = SessionManager.getInstance().getControlUnit().getMemory().getValue(addr);
+            int data = SessionManager.getInstance().getControlUnit().getDataInterface().getValue(addr);
             this.cpu.getMemoryBufferRegister().setValue(data);
 
             LOGGER.log(Level.INFO, String.format("Loading '%d' from Memory Address: %d", data, addr));
@@ -98,7 +98,7 @@ public class CPUController implements Initializable {
         CompletableFuture.runAsync(() -> {
             SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
-            int data = SessionManager.getInstance().getControlUnit().getMemory().getValue(addr);
+            int data = SessionManager.getInstance().getControlUnit().getDataInterface().getValue(addr);
             this.cpu.getMemoryBufferRegister().setValue(data);
 
             LOGGER.log(Level.INFO, String.format("Loading '%d' from Memory Address: %d", data, addr));
@@ -111,7 +111,7 @@ public class CPUController implements Initializable {
             SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = this.cpu.getMemoryBufferRegister().getValue();
-            SessionManager.getInstance().getControlUnit().getMemory().setValue(addr, data);
+            SessionManager.getInstance().getControlUnit().getDataInterface().setValue(addr, data);
 
             LOGGER.log(Level.INFO, String.format("Storing '%d' to Memory Address: %d", data, addr));
         });
@@ -122,7 +122,7 @@ public class CPUController implements Initializable {
             SessionManager.getInstance().getControlUnit().HLT(true);
             int addr = this.cpu.getMemoryAddressRegister().getValue();
             int data = this.cpu.getMemoryBufferRegister().getValue();
-            SessionManager.getInstance().getControlUnit().getMemory().setValue(addr, data);
+            SessionManager.getInstance().getControlUnit().getDataInterface().setValue(addr, data);
 
             LOGGER.log(Level.INFO, String.format("Storing '%d' to Memory Address: %d", data, addr));
             this.cpu.getMemoryAddressRegister().setValue(addr + 1);

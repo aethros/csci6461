@@ -4,8 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.gwu.seas.csci.architecture6461.models.CPU;
+import edu.gwu.seas.csci.architecture6461.models.DataInterface;
 import edu.gwu.seas.csci.architecture6461.models.MachineInstruction;
-import edu.gwu.seas.csci.architecture6461.models.Memory;
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import edu.gwu.seas.csci.architecture6461.models.MachineInstruction.Operand;
 import edu.gwu.seas.csci.architecture6461.util.InstructionUtils;
@@ -20,7 +20,7 @@ public final class ControlUnit {
     private static final String LOG_JUMP = "Jumped to memory address {0}.";
 
     @Getter
-    private Memory memory = Memory.getInstance();
+    private DataInterface dataInterface = DataInterface.getInstance();
     @Getter
     private CPU cpu = CPU.getInstance();
 
@@ -36,7 +36,7 @@ public final class ControlUnit {
     public void reset() {
         LOGGER.info("Resetting the Control Unit.");
         this.cpu.reset();
-        this.memory.initialize(2048);
+        this.dataInterface.initialize(2048, 16);
     }
 
     /**
@@ -89,7 +89,7 @@ public final class ControlUnit {
         PC.setValue(PC.getValue() + 1);
 
         // Set the Memory Buffer Register to the value at the Memory Address Register
-        var memoryLine = this.memory.getValue(MAR.getValue());
+        var memoryLine = this.dataInterface.getValue(MAR.getValue());
         this.checkAddress(memoryLine);
         MBR.setValue(memoryLine);
 
@@ -335,15 +335,15 @@ public final class ControlUnit {
     private void SMR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(register.getValue() - this.memory.getValue(address));
-        LOGGER.log(Level.INFO, String.format("Subtracted value %d from memory address %d from register %s.", this.memory.getValue(address), address, register.getName()));
+        register.setValue(register.getValue() - this.dataInterface.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Subtracted value %d from memory address %d from register %s.", this.dataInterface.getValue(address), address, register.getName()));
     }
 
     private void AMR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(register.getValue() + this.memory.getValue(address));
-        LOGGER.log(Level.INFO, String.format("Added value %d from memory address %d to register %s.", this.memory.getValue(address), address, register.getName()));
+        register.setValue(register.getValue() + this.dataInterface.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Added value %d from memory address %d to register %s.", this.dataInterface.getValue(address), address, register.getName()));
     }
 
     private void JGE(MachineInstruction instruction) {
@@ -428,14 +428,14 @@ public final class ControlUnit {
     private void STX(MachineInstruction instruction) {
         Register register = this.getIndexRegister(instruction);
         int address = this.getEffectiveAddress(instruction);
-        this.memory.setValue(address, register.getValue());
+        this.dataInterface.setValue(address, register.getValue());
         LOGGER.log(Level.INFO, String.format("Stored value %d from index register %s into memory address %d.", register.getValue(), register.getName(), address));
     }
 
     private void LDX(MachineInstruction instruction) {
         Register register = this.getIndexRegister(instruction);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(this.memory.getValue(address));
+        register.setValue(this.dataInterface.getValue(address));
         LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into index register %s.", register.getValue(), address, register.getName()));
     }
 
@@ -449,14 +449,14 @@ public final class ControlUnit {
     private void STR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        this.memory.setValue(address, register.getValue());
+        this.dataInterface.setValue(address, register.getValue());
         LOGGER.log(Level.INFO, String.format("Stored value %d from register %s into memory address %d.", register.getValue(), register.getName(), address));
     }
 
     private void LDR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(this.memory.getValue(address));
+        register.setValue(this.dataInterface.getValue(address));
         LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into register %s.", register.getValue(), address, register.getName()));
     }
 
@@ -516,13 +516,13 @@ public final class ControlUnit {
         } else {
             if (!ix) {
                 // indirect addressing, but NO indexing
-                ea = memory.getValue(address);
+                ea = dataInterface.getValue(address);
                 // It helps to think in terms of a
                 // pointer where the address field has the location of the EA
                 // in memory
             } else {
                 // both indirect addressing and indexing
-                ea = memory.getValue(indexRegister.getValue() + address);
+                ea = dataInterface.getValue(indexRegister.getValue() + address);
                 // another way to think of this is take the EA computed without
                 // indirections and use that as the location of where the EA is stored.
             }

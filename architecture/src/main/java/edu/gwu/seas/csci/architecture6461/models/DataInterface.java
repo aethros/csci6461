@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import lombok.Getter;
 
 public final class DataInterface {
-    private static final Logger LOGGER = Logger.getLogger(DataInterface.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("DataInterface");
     private static DataInterface instance;
     private Memory memory = Memory.getInstance();
 

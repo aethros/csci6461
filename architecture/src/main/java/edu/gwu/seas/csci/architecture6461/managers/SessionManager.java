@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.val;
 
 public final class SessionManager {
-    private static final Logger LOGGER = Logger.getLogger(SessionManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("SessionManager");
     private static SessionManager instance;
     private boolean programLoaded = false;
 

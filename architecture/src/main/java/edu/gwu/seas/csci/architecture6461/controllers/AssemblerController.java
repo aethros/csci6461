@@ -22,7 +22,7 @@ import javafx.stage.Window;
 import javafx.stage.FileChooser.ExtensionFilter;
 
 public class AssemblerController implements Initializable {
-    private static final Logger LOGGER = Logger.getLogger(AssemblerController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("AssemblerController");
 
     @FXML
     Button selectButton;

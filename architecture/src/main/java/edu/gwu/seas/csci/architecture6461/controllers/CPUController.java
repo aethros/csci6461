@@ -15,7 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 
 public class CPUController implements Initializable {
-    private static final Logger LOGGER = Logger.getLogger(CPUController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("CPUController");
 
     @FXML
     private RegisterView programCounterView;

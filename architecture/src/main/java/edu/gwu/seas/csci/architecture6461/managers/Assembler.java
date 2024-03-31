@@ -21,7 +21,7 @@ import lombok.val;
  * Class for assembling programs into machine code.
  */
 public final class Assembler {
-    private static final Logger LOGGER = Logger.getLogger(Assembler.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("Assembler");
 
     public static final int REGISTER_BIT_POSITION = 8;
     public static final int INDEX_BIT_POSITION = 6;

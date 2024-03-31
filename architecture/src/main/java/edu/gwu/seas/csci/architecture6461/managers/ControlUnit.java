@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.val;
 
 public final class ControlUnit {
-    private static final Logger LOGGER = Logger.getLogger(ControlUnit.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("ControlUnit");
     private static final String LOG_JUMP = "Jumped to memory address {0}.";
 
     @Getter

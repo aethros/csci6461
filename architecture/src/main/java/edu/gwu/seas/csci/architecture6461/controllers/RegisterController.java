@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 import lombok.val;
 
 public class RegisterController implements Initializable {
-    private static final Logger LOGGER = Logger.getLogger(RegisterController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("RegisterController");
     @FXML
     private Label label;
     @FXML

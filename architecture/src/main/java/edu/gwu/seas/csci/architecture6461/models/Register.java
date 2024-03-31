@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.val;
 
 public class Register {
-    private static final Logger LOGGER = Logger.getLogger(Register.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("Register");
 
     public static final int MAX_SIZE = 16;
     private IntegerProperty value;

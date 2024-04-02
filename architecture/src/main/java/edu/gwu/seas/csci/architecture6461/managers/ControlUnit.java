@@ -4,7 +4,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import edu.gwu.seas.csci.architecture6461.models.CPU;
-import edu.gwu.seas.csci.architecture6461.models.DataInterface;
+import edu.gwu.seas.csci.architecture6461.models.MemoryInterface;
 import edu.gwu.seas.csci.architecture6461.models.MachineInstruction;
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import edu.gwu.seas.csci.architecture6461.models.MachineInstruction.Operand;
@@ -20,7 +20,7 @@ public final class ControlUnit {
     private static final String LOG_JUMP = "Jumped to memory address {0}.";
 
     @Getter
-    private DataInterface dataInterface = DataInterface.getInstance();
+    private MemoryInterface memoryInterface = MemoryInterface.getInstance();
     @Getter
     private CPU cpu = CPU.getInstance();
 
@@ -36,7 +36,7 @@ public final class ControlUnit {
     public void reset() {
         LOGGER.info("Resetting the Control Unit.");
         this.cpu.reset();
-        this.dataInterface.initialize(2048, 16);
+        this.memoryInterface.initialize(2048, 16);
     }
 
     /**
@@ -54,9 +54,6 @@ public final class ControlUnit {
      * Executes a single step of the Control Unit.
      */
     public void singleStep() {
-        // Check Instruction Cache
-        // TODO: Implement Cache
-
         // Fetch
         this.fetch(
             this.cpu.getMemoryAddressRegister(),
@@ -89,7 +86,7 @@ public final class ControlUnit {
         PC.setValue(PC.getValue() + 1);
 
         // Set the Memory Buffer Register to the value at the Memory Address Register
-        var memoryLine = this.dataInterface.getValue(MAR.getValue());
+        var memoryLine = this.memoryInterface.getValue(MAR.getValue());
         this.checkAddress(memoryLine);
         MBR.setValue(memoryLine);
 
@@ -130,7 +127,6 @@ public final class ControlUnit {
     public void executeInstruction(MachineInstruction instruction) {
         LOGGER.log(Level.INFO, "Executing instruction: {0}.", instruction.toString());
         Opcode code = instruction.getOpcode();
-
         switch (code) {
             case LDR: this.LDR(instruction);
                 break;
@@ -144,7 +140,7 @@ public final class ControlUnit {
                 break;
             case SETCCE: this.SETCCE(instruction);
                 break;
-            case JZ: this.JZ(instruction);
+            case  JZ: this.JZ(instruction);
                 break;
             case JNE: this.JNE(instruction);
                 break;
@@ -184,7 +180,7 @@ public final class ControlUnit {
                 break;
             case RRC: this.RRC(instruction);
                 break;
-            case IN: this.IN(instruction);
+            case  IN: this.IN(instruction);
                 break;
             case OUT: this.OUT(instruction);
                 break;
@@ -203,13 +199,9 @@ public final class ControlUnit {
     }
 
     private void OUT(MachineInstruction instruction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'OUT'");
     }
 
     private void IN(MachineInstruction instruction) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'IN'");
     }
 
     private void RRC(MachineInstruction instruction) {
@@ -221,14 +213,15 @@ public final class ControlUnit {
         if (logicalRotate) {
             if (left > 0) {
                 // TODO: Left rotate logical
+
             } else {
                 // TODO: Right rotate logical
             }
         } else {
             if (left > 0) {
-                // Left rotate arithmetic
+                // TODO: Left rotate arithmetic
             } else {
-                // Right rotate arithmetic
+                // TODO: Right rotate arithmetic
             }
         }
         r.setValue(value);
@@ -299,6 +292,7 @@ public final class ControlUnit {
         rxP1.setValue(remainder);
         if (ry.getValue() == 0) {
             this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() | ConditionCode.toInteger(ConditionCode.DIVZERO));
+            LOGGER.info("Division by zero occurred.");
         }
         LOGGER.log(Level.INFO, String.format("Divided values %d by %d and stored the quotient in register %s and the remainder in register %s.", rx.getValue(), ry.getValue(), rx.getName(), rxP1.getName()));
     }
@@ -314,6 +308,7 @@ public final class ControlUnit {
         rxP1.setValue(low);
         if (value < rx.getValue() || value < ry.getValue()) {
             this.cpu.getConditionCode().setValue(this.cpu.getConditionCode().getValue() | ConditionCode.toInteger(ConditionCode.OVERFLOW));
+            LOGGER.info("Overflow occurred during multiplication.");
         }
         LOGGER.log(Level.INFO, String.format("Multiplied values %d and %d and stored the result in registers %s and %s.", rx.getValue(), ry.getValue(), rx.getName(), rxP1.getName()));
     }
@@ -335,15 +330,15 @@ public final class ControlUnit {
     private void SMR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(register.getValue() - this.dataInterface.getValue(address));
-        LOGGER.log(Level.INFO, String.format("Subtracted value %d from memory address %d from register %s.", this.dataInterface.getValue(address), address, register.getName()));
+        register.setValue(register.getValue() - this.memoryInterface.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Subtracted value %d from memory address %d from register %s.", this.memoryInterface.getValue(address), address, register.getName()));
     }
 
     private void AMR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(register.getValue() + this.dataInterface.getValue(address));
-        LOGGER.log(Level.INFO, String.format("Added value %d from memory address %d to register %s.", this.dataInterface.getValue(address), address, register.getName()));
+        register.setValue(register.getValue() + this.memoryInterface.getValue(address));
+        LOGGER.log(Level.INFO, String.format("Added value %d from memory address %d to register %s.", this.memoryInterface.getValue(address), address, register.getName()));
     }
 
     private void JGE(MachineInstruction instruction) {
@@ -428,14 +423,14 @@ public final class ControlUnit {
     private void STX(MachineInstruction instruction) {
         Register register = this.getIndexRegister(instruction);
         int address = this.getEffectiveAddress(instruction);
-        this.dataInterface.setValue(address, register.getValue());
+        this.memoryInterface.setValue(address, register.getValue());
         LOGGER.log(Level.INFO, String.format("Stored value %d from index register %s into memory address %d.", register.getValue(), register.getName(), address));
     }
 
     private void LDX(MachineInstruction instruction) {
         Register register = this.getIndexRegister(instruction);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(this.dataInterface.getValue(address));
+        register.setValue(this.memoryInterface.getValue(address));
         LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into index register %s.", register.getValue(), address, register.getName()));
     }
 
@@ -449,28 +444,15 @@ public final class ControlUnit {
     private void STR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        this.dataInterface.setValue(address, register.getValue());
+        this.memoryInterface.setValue(address, register.getValue());
         LOGGER.log(Level.INFO, String.format("Stored value %d from register %s into memory address %d.", register.getValue(), register.getName(), address));
     }
 
     private void LDR(MachineInstruction instruction) {
         Register register = this.getGpRegister(instruction, Operand.R);
         int address = this.getEffectiveAddress(instruction);
-        register.setValue(this.dataInterface.getValue(address));
+        register.setValue(this.memoryInterface.getValue(address));
         LOGGER.log(Level.INFO, String.format("Loaded value %d from memory address %d into register %s.", register.getValue(), address, register.getName()));
-    }
-
-    private Register getrxP1Register(Register rx) {
-        switch (rx.getName()) {
-            case "R0":
-                return this.cpu.getGpRegister1();
-            case "R2":
-                return this.cpu.getGpRegister3();
-            case "R1":
-            case "R3":
-            default:
-                return null;
-        }
     }
 
     private void checkAddress(int instruction) {
@@ -516,13 +498,13 @@ public final class ControlUnit {
         } else {
             if (!ix) {
                 // indirect addressing, but NO indexing
-                ea = dataInterface.getValue(address);
+                ea = memoryInterface.getValue(address);
                 // It helps to think in terms of a
                 // pointer where the address field has the location of the EA
                 // in memory
             } else {
                 // both indirect addressing and indexing
-                ea = dataInterface.getValue(indexRegister.getValue() + address);
+                ea = memoryInterface.getValue(indexRegister.getValue() + address);
                 // another way to think of this is take the EA computed without
                 // indirections and use that as the location of where the EA is stored.
             }
@@ -555,6 +537,19 @@ public final class ControlUnit {
                 return this.cpu.getIndexRegister2();
             case 3:
                 return this.cpu.getIndexRegister3();
+            default:
+                return null;
+        }
+    }
+
+    private Register getrxP1Register(Register rx) {
+        switch (rx.getName()) {
+            case "R0":
+                return this.cpu.getGpRegister1();
+            case "R2":
+                return this.cpu.getGpRegister3();
+            case "R1":
+            case "R3":
             default:
                 return null;
         }

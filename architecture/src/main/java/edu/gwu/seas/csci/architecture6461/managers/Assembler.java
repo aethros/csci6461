@@ -225,7 +225,10 @@ public final class Assembler {
                     value |= this.setAddressBits(value, instruction.getOperand(0), symbolValue);
                     break;
                 case "LOC":
+                    break;
                 default:
+                // No known instruction, decrement the address pointer (it gets incremented later, so this keeps it at +0).
+                    address--;
                     break;
             }
 

@@ -5,15 +5,15 @@ import java.util.logging.Logger;
 
 import lombok.Getter;
 
-public final class DataInterface {
+public final class MemoryInterface {
     private static final Logger LOGGER = Logger.getLogger("DataInterface");
-    private static DataInterface instance;
+    private static MemoryInterface instance;
     private Memory memory = Memory.getInstance();
 
     @Getter
     private Cache cache = Cache.getInstance();
 
-    private DataInterface() {
+    private MemoryInterface() {
     }
 
     /**
@@ -21,9 +21,9 @@ public final class DataInterface {
      * 
      * @return The application data.
      */
-    public static DataInterface getInstance() {
+    public static MemoryInterface getInstance() {
         if (instance == null) {
-            instance = new DataInterface();
+            instance = new MemoryInterface();
         }
 
         return instance;
@@ -38,7 +38,7 @@ public final class DataInterface {
     public int getValue(int address) {
         int offset = address % 8;
         int tag = (address - offset) & 0x00000FFF;
-        if (this.cache.getValue(tag).length > 0) {
+        if (this.cache.getValue(tag) != null) {
             LOGGER.log(Level.INFO, String.format("Cache hit at address: %d, offset: %d", (address - offset), offset));
             return this.cache.getValue(tag)[offset];
         } else {
@@ -61,9 +61,17 @@ public final class DataInterface {
         int offset = address % 8;
         int tag = (address - offset) & 0x00000FFF;
         int[] values = this.cache.getValue(tag);
-        values[offset] = value;
-        this.cache.setValue(tag, values);
-        // write through to memory
-        this.memory.setValue(address, value);
+        if (values != null) {
+            values[offset] = value;
+            this.cache.setValue(tag, values);
+            // write through to memory
+            this.memory.setValue(address, value);
+        } else {
+            values = new int[8];
+            values[offset] = value;
+            this.cache.setValue(tag, values);
+            // write through to memory
+            this.memory.setValue(address, value);
+        }
     }
 }

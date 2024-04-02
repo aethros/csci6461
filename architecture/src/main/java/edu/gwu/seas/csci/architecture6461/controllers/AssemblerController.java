@@ -40,12 +40,28 @@ public class AssemblerController implements Initializable {
         // No initialization needed.
     }
 
-    public void load(ActionEvent event) {
+    @FXML
+    private void selectFile(ActionEvent event) {
+        Node source = (Node) event.getSource();
+        Stage primaryStage = (Stage) source.getScene().getWindow();
+        FileChooser fileChooser = new FileChooser();
+        ExtensionFilter asmFilter = new ExtensionFilter("Assembly files (*.S, *.s, *.asm, *.ASM)", "*.S", "*.s", "*.asm", "*.ASM");
+        ExtensionFilter extFilter = new ExtensionFilter("All files (*.*)", "*.*");
+        fileChooser.getExtensionFilters().addAll(asmFilter, extFilter);
+        File file = fileChooser.showOpenDialog(primaryStage);
+        if (file != null) {
+            filePath.setText(file.getAbsolutePath());
+        }
+    }
+
+    @FXML
+    private void load(ActionEvent event) {
         LOGGER.info("Loading the main window.");
         this.launchSimulator(true);
     }
 
-    public void assembleAndLoad(ActionEvent event) {
+    @FXML
+    private void assembleAndLoad(ActionEvent event) {
         String path = filePath.getText();
         if (path == null || path.isEmpty()) {
             LOGGER.warning("No file selected for assembly.");
@@ -60,19 +76,6 @@ public class AssemblerController implements Initializable {
 
         this.handleAssemble(path, file);
         this.launchSimulator(false);
-    }
-
-    public void selectFile(ActionEvent event) {
-        Node source = (Node) event.getSource();
-        Stage primaryStage = (Stage) source.getScene().getWindow();
-        FileChooser fileChooser = new FileChooser();
-        ExtensionFilter asmFilter = new ExtensionFilter("Assembly files (*.S, *.s, *.asm, *.ASM)", "*.S", "*.s", "*.asm", "*.ASM");
-        ExtensionFilter extFilter = new ExtensionFilter("All files (*.*)", "*.*");
-        fileChooser.getExtensionFilters().addAll(asmFilter, extFilter);
-        File file = fileChooser.showOpenDialog(primaryStage);
-        if (file != null) {
-            filePath.setText(file.getAbsolutePath());
-        }
     }
 
     private void handleAssemble(String path, File file) {
@@ -99,6 +102,7 @@ public class AssemblerController implements Initializable {
             try {
                 // Open the main window.
                 Stage primaryStage = new Stage();
+                primaryStage.setTitle("CSCI 6461 Simulator");
                 primaryStage.setScene(new Scene(new CPUView(SessionManager.getInstance().getControlUnit().getCpu())));
                 primaryStage.show();
             } catch (IOException e) {

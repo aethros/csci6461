@@ -46,7 +46,7 @@ public final class Memory {
      * @param address The address which will be set.
      * @param value   The value to set memory to.
      */
-    public void setValue(int address, int value) {
+    protected void setValue(int address, int value) {
         this.data[address] = value;
     }
 

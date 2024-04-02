@@ -1,8 +1,8 @@
 # Cache
 
 ## References:
-https://course.ccs.neu.edu/com3200/parent/NOTES/cache-basics.html
-https://csillustrated.berkeley.edu/PDFs/handouts/cache-3-associativity-handout.pdf
+- https://course.ccs.neu.edu/com3200/parent/NOTES/cache-basics.html
+- https://csillustrated.berkeley.edu/PDFs/handouts/cache-3-associativity-handout.pdf
 
 ## Requirements:
 - 8 words per block
@@ -11,14 +11,14 @@ https://csillustrated.berkeley.edu/PDFs/handouts/cache-3-associativity-handout.p
 - Write Through Cache
 - Display Cache UI
 
-UI Example:
+### UI Example:
 - Tag is a reference to the address
 ```text
  Tag | Lines -->
  075   000750 000751 000752 000753 000754 000755 000756 000757
 ```
 
-Code Sketch:
+### Code Sketch:
 ```java
 // The CPU Cache is as follows:
 Queue<CacheLine> = new LinkedList<>();

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import edu.gwu.seas.csci.architecture6461.views.*?>
+
+
+<fx:root type="javafx.scene.layout.Pane" maxHeight="-Infinity" maxWidth="-Infinity"
+   minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8"
+   xmlns:fx="http://javafx.com/fxml/1"
+   fx:controller="edu.gwu.seas.csci.architecture6461.controllers.CacheController">
+   <children>
+      <VBox alignment="CENTER" spacing="5.0">
+         <children>
+            <CacheLineView fx:id="c0" />
+            <CacheLineView fx:id="c1" />
+            <CacheLineView fx:id="c2" />
+            <CacheLineView fx:id="c3" />
+            <CacheLineView fx:id="c4" />
+            <CacheLineView fx:id="c5" />
+            <CacheLineView fx:id="c6" />
+            <CacheLineView fx:id="c7" />
+            <CacheLineView fx:id="c8" />
+            <CacheLineView fx:id="c9" />
+            <CacheLineView fx:id="c10" />
+            <CacheLineView fx:id="c11" />
+            <CacheLineView fx:id="c12" />
+            <CacheLineView fx:id="c13" />
+            <CacheLineView fx:id="c14" />
+            <CacheLineView fx:id="c15" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+   </children>
+</fx:root>

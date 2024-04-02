@@ -55,6 +55,8 @@
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
       </columnConstraints>
       <rowConstraints>
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -67,6 +69,8 @@
         <Button fx:id="startButton" text="Start" GridPane.columnIndex="4" GridPane.rowIndex="0" onAction="#startButtonEvent"/>
         <Button fx:id="stepButton" text="Step" GridPane.columnIndex="5" GridPane.rowIndex="0" onAction="#stepButtonEvent"/>
         <Button fx:id="haltButton" text="Halt" GridPane.columnIndex="6" GridPane.rowIndex="0" onAction="#haltButtonEvent"/>
+        <Button fx:id="cacheButton" text="Show/Hide Cache" GridPane.columnIndex="7" GridPane.rowIndex="0" onAction="#cacheButtonEvent"/>
+        <Button fx:id="ioButton" text="Show/Hide I/O" GridPane.columnIndex="8" GridPane.rowIndex="0" onAction="#ioButtonEvent"/>
       </children>
     </GridPane>
   </children>

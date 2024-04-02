@@ -1,10 +1,8 @@
 package edu.gwu.seas.csci.architecture6461.models;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Queue;
-
 import javafx.util.Pair;
 import lombok.Getter;
 
@@ -14,7 +12,7 @@ public final class Cache {
     @Getter
     private int capacity;
 
-    private Queue<Pair<Integer, int[]>> memoryCache;
+    private LinkedHashMap<Integer, Pair<Integer, int[]>> memoryCache;
 
     private List<CacheEventHandler> eventHandler = new ArrayList<>();
 
@@ -37,34 +35,48 @@ public final class Cache {
     public void initialize(int cacheSize) {
         this.capacity = cacheSize;
         this.cacheSize = 0;
-        this.memoryCache = new LinkedList<>();
+        this.memoryCache = new LinkedHashMap<>();
     }
 
     public int[] getValue(int tag) {
-        for (Pair<Integer, int[]> item : memoryCache) {
-            if (item.getKey() == tag) {
-                return item.getValue().clone();
+        for (var item : memoryCache.entrySet()) {
+            if (item.getValue().getKey() == tag) {
+                return item.getValue().getValue().clone();
             }
         }
 
-        return new int[8];
+        return null;
+    }
+
+    public Pair<Integer, int[]> getCacheLine(int lineNr) {
+        if (this.memoryCache.containsKey(lineNr)) {
+            return this.memoryCache.get(lineNr);
+        }
+        else {
+            return new Pair<>(0, new int[8]);
+        }
     }
 
     protected void setValue(int tag, int[] values) {
-        if (this.memoryCache.stream().filter(item -> item.getKey() == tag).count() > 0) {
-            this.memoryCache.removeIf(item -> item.getKey() == tag);
-            this.memoryCache.add(new Pair<>(tag, values));
-        } else {
-            if (cacheSize < capacity) {
-                this.memoryCache.add(new Pair<>(tag, values));
-                this.cacheSize++;
-            } else {
-                // evict old item then add new item
-                this.memoryCache.poll();
-                this.memoryCache.add(new Pair<>(tag, values));
+        for (var entry : memoryCache.entrySet()) {
+            var pair = entry.getValue();
+            if (pair.getKey().equals(tag)) {
+                this.memoryCache.remove(entry.getKey());
+                this.memoryCache.put(entry.getKey(), new Pair<>(tag, values));
+
+                // Update bindings and exit
+                this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache));
+                return;
             }
         }
-
+        if (cacheSize < capacity) {
+            this.memoryCache.put(this.cacheSize, new Pair<>(tag, values));
+            this.cacheSize++;
+        } else {
+            // evict old item then add new item
+            this.memoryCache.remove(0);
+            this.memoryCache.put(this.cacheSize, new Pair<>(tag, values));
+        }
         this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache));
     }
 
@@ -78,8 +90,9 @@ public final class Cache {
     }
 
 
+    @FunctionalInterface
     public interface CacheEventHandler {
-        void onUpdate(Queue<Pair<Integer, int[]>>  cache);
+        void onUpdate(LinkedHashMap<Integer, Pair<Integer, int[]>>  cache);
     }
     
 }

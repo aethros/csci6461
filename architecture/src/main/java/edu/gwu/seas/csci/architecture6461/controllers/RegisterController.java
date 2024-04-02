@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -155,7 +156,7 @@ public class RegisterController implements Initializable {
      * This method is called when the "Load" button is clicked.
      */
     @FXML
-    private void loadValue() {
+    private void loadValue(ActionEvent event) {
         val value = this.bitSet.isEmpty() ? 0 : this.bitSet.toLongArray()[0];
         this.register.setValue((int) value);
     }

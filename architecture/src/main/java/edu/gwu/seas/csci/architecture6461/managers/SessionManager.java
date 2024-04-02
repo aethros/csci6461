@@ -44,7 +44,7 @@ public final class SessionManager {
             val entries = new ArrayList<>(assembled.entrySet());
             entries.sort(Map.Entry.comparingByKey());
             for (Map.Entry<Integer, Integer> entry : entries) {
-                this.controlUnit.getDataInterface().setValue(entry.getKey(), entry.getValue());
+                this.controlUnit.getMemoryInterface().setValue(entry.getKey(), entry.getValue());
             }
             LOGGER.info("Program loaded into memory.");
             programLoaded = true;

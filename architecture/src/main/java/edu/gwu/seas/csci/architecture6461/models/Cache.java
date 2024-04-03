@@ -3,6 +3,11 @@ package edu.gwu.seas.csci.architecture6461.models;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+
 import javafx.util.Pair;
 import lombok.Getter;
 
@@ -58,26 +63,52 @@ public final class Cache {
     }
 
     protected void setValue(int tag, int[] values) {
-        for (var entry : memoryCache.entrySet()) {
+        var set = memoryCache.entrySet();
+        for (var entry : set) {
             var pair = entry.getValue();
+            // if the tag is already in the cache, update the value
             if (pair.getKey().equals(tag)) {
+                // remove the old entry
                 this.memoryCache.remove(entry.getKey());
-                this.memoryCache.put(entry.getKey(), new Pair<>(tag, values));
+                this.cacheSize--;
+                // update the insertion order for the queue
+                var existingSet = this.deepCloneSet(memoryCache.entrySet());
+                for (var existingEntry : existingSet) {
+                    // if the key is greater than or equal to the current key, decrement the key
+                    if (existingEntry.getKey() >= entry.getKey()) {
+                        var key = existingEntry.getKey();
+                        var value = existingEntry.getValue();
+                        this.memoryCache.put(key - 1, value);
+                    }
+                }
+                // add the new entry
+                this.memoryCache.put(this.cacheSize, new Pair<>(tag, values));
+                this.cacheSize++;
 
                 // Update bindings and exit
-                this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache));
+                CompletableFuture.runAsync(() -> this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache)));
                 return;
             }
         }
+        // if the tag is not in the cache, add it
         if (cacheSize < capacity) {
+            // add new item
             this.memoryCache.put(this.cacheSize, new Pair<>(tag, values));
             this.cacheSize++;
         } else {
-            // evict old item then add new item
+            // evict old item
             this.memoryCache.remove(0);
+            // update the insertion order for the queue
+            for (var entry : memoryCache.entrySet()) {
+                var key = entry.getKey();
+                var value = entry.getValue();
+                this.memoryCache.put(key - 1, value);
+            }
+            //  then add new item
             this.memoryCache.put(this.cacheSize, new Pair<>(tag, values));
         }
-        this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache));
+                // Update bindings and exit
+        CompletableFuture.runAsync(() -> this.eventHandler.forEach(handler -> handler.onUpdate(memoryCache)));
     }
 
     public void addEventListener(CacheEventHandler eventHandler) {
@@ -89,6 +120,23 @@ public final class Cache {
         return this.eventHandler.remove(eventHandler);
     }
 
+    private Set<Entry<Integer, Pair<Integer, int[]>>> deepCloneSet(Set<Entry<Integer, Pair<Integer, int[]>>> entrySet) {
+        Map<Integer, Pair<Integer, int[]>> clonedMap = new LinkedHashMap<>();
+
+        for (var entry : entrySet) {
+            Integer clonedKey = Integer.valueOf(entry.getKey());
+            Pair<Integer, int[]> clonedValue = this.deepClonePair(entry.getValue());
+            clonedMap.put(clonedKey, clonedValue);
+        }
+
+        return clonedMap.entrySet();
+    }
+
+    private Pair<Integer, int[]> deepClonePair(Pair<Integer, int[]> value) {
+        Integer clonedKey = Integer.valueOf(value.getKey());
+        int[] clonedValue = value.getValue().clone();
+        return new Pair<>(clonedKey, clonedValue);
+    }
 
     @FunctionalInterface
     public interface CacheEventHandler {

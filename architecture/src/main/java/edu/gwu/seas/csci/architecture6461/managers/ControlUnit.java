@@ -1,5 +1,6 @@
 package edu.gwu.seas.csci.architecture6461.managers;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +19,7 @@ import lombok.val;
 public final class ControlUnit {
     private static final Logger LOGGER = Logger.getLogger("ControlUnit");
     private static final String LOG_JUMP = "Jumped to memory address {0}.";
+    private static final String DEVICE_ERROR = "DeviceID not recognized for I/O: {0}.";
 
     @Getter
     private MemoryInterface memoryInterface = MemoryInterface.getInstance();
@@ -25,6 +27,25 @@ public final class ControlUnit {
     private CPU cpu = CPU.getInstance();
 
     private boolean isRunning = false;
+
+    @FunctionalInterface
+    public interface IOInputMethod {
+        char invoke();
+    }
+
+    @FunctionalInterface
+    public interface IOOutputMethod {
+        void invoke(char output);
+    }
+
+    @FunctionalInterface
+    public interface IOCheckMethod {
+        int invoke();
+    }
+
+    public IOInputMethod getInput;
+    public IOOutputMethod sendOutput;
+    public IOCheckMethod checkStatus;
 
     public ControlUnit() {
         // No need to initialize anything here
@@ -184,6 +205,8 @@ public final class ControlUnit {
                 break;
             case OUT: this.OUT(instruction);
                 break;
+            case CHK: this.CHK(instruction);
+                break;
             case HLT: this.HLT(false);
                 break;
             default:
@@ -198,10 +221,57 @@ public final class ControlUnit {
         this.isRunning = false;
     }
 
+    private void CHK(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int deviceId = instruction.getAddress();
+        if (deviceId == 0) {
+            final Integer[] status = new Integer[1];
+            if (this.checkStatus != null) {
+                CompletableFuture.runAsync(() -> status[0] = this.checkStatus.invoke());
+            }
+            else {
+                LOGGER.severe("No check status method provided.");
+            }
+            LOGGER.log(Level.INFO, String.format("Checked status of device %d and received status: %d.", deviceId, status[0]));
+            register.setValue(status[0]);
+        } else {
+            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+        }
+    }
+
     private void OUT(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int deviceId = instruction.getAddress();
+        if (deviceId == 1) {
+            char output = (char)register.getValue();
+            LOGGER.log(Level.INFO, "Printing output: {0}", output);
+            if (this.sendOutput != null) {
+                CompletableFuture.runAsync(() -> this.sendOutput.invoke(output));
+            }
+            else {
+                LOGGER.severe("No send output method provided.");
+            }
+        } else {
+            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+        }
     }
 
     private void IN(MachineInstruction instruction) {
+        Register register = this.getGpRegister(instruction, Operand.R);
+        int deviceId = instruction.getAddress();
+        if (deviceId == 0) {
+            final Character[] key = new Character[1]; 
+            if (this.checkStatus != null) {
+                CompletableFuture.runAsync(() -> key[0] = this.getInput.invoke());
+            }
+            else {
+                LOGGER.severe("No get input method provided.");
+            }
+            LOGGER.log(Level.INFO, "Received input: {0}", key[0]);
+            register.setValue(key[0]);
+        } else {
+            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+        }
     }
 
     private void RRC(MachineInstruction instruction) {

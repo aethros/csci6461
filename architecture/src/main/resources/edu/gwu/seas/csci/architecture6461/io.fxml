@@ -2,10 +2,21 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 
-<fx:root type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8"
-xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.gwu.seas.csci.architecture6461.controllers.IOController">
+<fx:root type="javafx.scene.layout.Pane"
+    maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+    prefHeight="400.0" prefWidth="600.0"
+    xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="edu.gwu.seas.csci.architecture6461.controllers.IOController">
+    <children>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="340.0" layoutX="14.0"
+            layoutY="14.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="2.0" width="572.0" />
+        <TextField fx:id="inputField" layoutX="14.0" layoutY="360.0" prefHeight="25.0" prefWidth="572.0" />
+        <Text fx:id="outputText" layoutX="24.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text=""
+            wrappingWidth="552.0" />
+    </children>
 </fx:root>

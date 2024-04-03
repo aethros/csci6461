@@ -71,18 +71,28 @@ public final class Assembler {
 
         for (var line : lines) {
             LOGGER.log(Level.INFO, "Parsing line: {0}", line);
-            val instruction = new AssemblyInstruction((String)line);
-            instructions.add(instruction); // parse instruction and add to list
 
-            if (instruction.hasLabel()) { // load label with address if present
-                symbolTable.put(instruction.getLabel(), address);
-            }
-            if (instruction.operandSymbol() // load symbol with null address if operand
-                    && symbolTable.get(instruction.getOperandSymbol()) == null) {
-                symbolTable.put(instruction.getOperandSymbol(), null);
+            AssemblyInstruction instruction = null;
+            try {
+                instruction = new AssemblyInstruction((String)line);
+            } catch (IllegalArgumentException e) {
+                LOGGER.log(Level.WARNING, "Skipping line: {0}", line);
+                continue;
             }
 
-            address = setLocation(address, instruction);
+            if (instruction != null) {
+                instructions.add(instruction); // parse instruction and add to list
+
+                if (instruction.hasLabel()) { // load label with address if present
+                    symbolTable.put(instruction.getLabel(), address);
+                }
+                if (instruction.operandSymbol() // load symbol with null address if operand
+                        && symbolTable.get(instruction.getOperandSymbol()) == null) {
+                    symbolTable.put(instruction.getOperandSymbol(), null);
+                }
+
+                address = setLocation(address, instruction);
+            }
         }
 
         return new Pair<>(instructions, symbolTable);

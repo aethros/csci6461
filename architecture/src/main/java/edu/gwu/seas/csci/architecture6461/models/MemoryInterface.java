@@ -42,7 +42,7 @@ public final class MemoryInterface {
             LOGGER.log(Level.INFO, String.format("Cache hit at address: %d, offset: %d", (address - offset), offset));
             return this.cache.getValue(tag)[offset];
         } else {
-            LOGGER.log(Level.INFO, "Cache miss at address: {}", address);
+            LOGGER.log(Level.INFO, "Cache miss at address: {0}", address);
             int value = this.memory.getValue(address);
             this.cache.setValue(tag, this.getCacheLine(address - offset));
             return value;
@@ -51,7 +51,7 @@ public final class MemoryInterface {
 
     private int[] getCacheLine(int baseAddress) {
         int[] values = new int[8];
-        for (int i = 0; i < (baseAddress + 8); i++) {
+        for (int i = 0; i < 8; i++) {
             values[i] = this.memory.getValue(baseAddress + i);
         }
         return values;

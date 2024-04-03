@@ -23,7 +23,7 @@ public class MachineInstruction {
     private InstructionType type;
 
     public MachineInstruction(Opcode code, int instruction) {
-        this.operands = new HashMap<Operand, Integer>();
+        this.operands = new HashMap<>();
         this.opcode = code;
         this.instruction = instruction;
         this.type = this.getType();

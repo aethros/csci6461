@@ -193,9 +193,9 @@ public class CPUController implements Initializable {
     private void ioButtonEvent(ActionEvent event) {
         this.ioVisible = !this.ioVisible;
         if (this.ioVisible) {
-            // this.ioStage.show();
+            this.ioStage.show();
         } else {
-            // this.ioStage.hide();
+            this.ioStage.hide();
         }
     }
 }

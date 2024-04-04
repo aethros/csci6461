@@ -69,10 +69,43 @@
                         <index>true</index>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>edu.gwu.seas.csci.architecture6461.App</mainClass>
+                            <mainClass>edu.gwu.seas.csci.architecture6461.MainClass</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
+            </plugin>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-shade-plugin</artifactId>
+              <version>3.5.2</version>
+              <configuration>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
+                <project></project>
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    <mainClass>edu.gwu.seas.csci.architecture6461.MainClass</mainClass>
+                  </transformer>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                </transformers>
+                <filters>
+                    <filter>
+                        <artifact>*:*</artifact>
+                        <excludes>
+                            <exclude>META-INF/substrate/config/reflectionconfig-*.json</exclude>
+                            <exclude>META-INF/substrate/config/reflectionconfig.json</exclude>
+                            <exclude>META-INF/substrate/config/resourcebundles</exclude>
+                        </excludes>
+                    </filter>
+                </filters>
+              </configuration>
+              <executions>
+                <execution>
+                  <phase>package</phase>
+                  <goals>
+                    <goal>shade</goal>
+                  </goals>
+                </execution>
+              </executions>
             </plugin>
         </plugins>
     </build>

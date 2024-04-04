@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import edu.gwu.seas.csci.architecture6461.models.Register;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -18,7 +19,7 @@ import javafx.scene.shape.Rectangle;
 import lombok.val;
 
 public class RegisterController implements Initializable {
-    private static final Logger LOGGER = Logger.getLogger(RegisterController.class.getName());
+    private static final Logger LOGGER = Logger.getLogger("RegisterController");
     @FXML
     private Label label;
     @FXML
@@ -75,8 +76,8 @@ public class RegisterController implements Initializable {
         this.register = register;
         this.bitSet = new BitSet(this.register.getSize());
         this.bitSet.set(0, this.register.getSize(), false);
-        this.initializeView();
         this.register.valueProperty().addListener(this::registerChangeEventListener);
+        this.initializeView();
     }
 
     /**
@@ -155,7 +156,7 @@ public class RegisterController implements Initializable {
      * This method is called when the "Load" button is clicked.
      */
     @FXML
-    private void loadValue() {
+    private void loadValue(ActionEvent event) {
         val value = this.bitSet.isEmpty() ? 0 : this.bitSet.toLongArray()[0];
         this.register.setValue((int) value);
     }

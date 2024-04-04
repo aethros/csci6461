@@ -46,8 +46,11 @@
         <!-- RegisterView fx:id="null" GridPane.columnIndex="1" GridPane.rowIndex="6" / -->
       </children>
     </GridPane>
-    <GridPane layoutY="761.0" prefHeight="200.0" prefWidth="1280.0">
+    <GridPane layoutY="761.0" prefHeight="200.0" prefWidth="1280.0" alignment="CENTER">
       <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -59,7 +62,15 @@
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       </rowConstraints>
       <children>
-        <!-- TODO: Add control elements (load text, step, stop, etc.) -->
+        <Button fx:id="loadButton" text="Load" GridPane.columnIndex="0" GridPane.rowIndex="0" onAction="#loadButtonEvent"/>
+        <Button fx:id="loadPlusButton" text="Load +" GridPane.columnIndex="1" GridPane.rowIndex="0" onAction="#loadPlusButtonEvent"/>
+        <Button fx:id="storeButton" text="Store" GridPane.columnIndex="2" GridPane.rowIndex="0" onAction="#storeButtonEvent"/>
+        <Button fx:id="storePlusButton" text="Store +" GridPane.columnIndex="3" GridPane.rowIndex="0" onAction="#storePlusButtonEvent"/>
+        <Button fx:id="startButton" text="Start" GridPane.columnIndex="4" GridPane.rowIndex="0" onAction="#startButtonEvent"/>
+        <Button fx:id="stepButton" text="Step" GridPane.columnIndex="5" GridPane.rowIndex="0" onAction="#stepButtonEvent"/>
+        <Button fx:id="haltButton" text="Halt" GridPane.columnIndex="6" GridPane.rowIndex="0" onAction="#haltButtonEvent"/>
+        <Button fx:id="cacheButton" text="Show/Hide Cache" GridPane.columnIndex="7" GridPane.rowIndex="0" onAction="#cacheButtonEvent"/>
+        <Button fx:id="ioButton" text="Show/Hide I/O" GridPane.columnIndex="8" GridPane.rowIndex="0" onAction="#ioButtonEvent"/>
       </children>
     </GridPane>
   </children>

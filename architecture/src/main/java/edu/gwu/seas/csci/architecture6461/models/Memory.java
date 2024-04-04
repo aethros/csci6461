@@ -1,6 +1,10 @@
 package edu.gwu.seas.csci.architecture6461.models;
 
+import lombok.Getter;
+
 public final class Memory {
+    @Getter
+    private int size;
     public static final int MEMORY_MAX = 4096;
     private static Memory instance;
     private int[] data;
@@ -14,6 +18,10 @@ public final class Memory {
      * @param size The size of application memory.
      */
     public void initialize(int size) {
+        this.size = (size < MEMORY_MAX)
+                ? size
+                : MEMORY_MAX;
+
         this.data = (size < MEMORY_MAX)
                 ? new int[size]
                 : new int[MEMORY_MAX];
@@ -38,7 +46,7 @@ public final class Memory {
      * @param address The address which will be set.
      * @param value   The value to set memory to.
      */
-    public void setValue(int address, int value) {
+    protected void setValue(int address, int value) {
         this.data[address] = value;
     }
 
@@ -49,6 +57,10 @@ public final class Memory {
      * @return The value at a given address.
      */
     public int getValue(int address) {
-        return this.data[address];
+        try {
+            return this.data[address];
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }

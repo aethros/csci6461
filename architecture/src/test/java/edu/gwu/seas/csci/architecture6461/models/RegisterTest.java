@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class RegisterTest {
-    private Register fourBitRegister = new Register(4);
-    private Register twelveBitRegister = new Register(12);
+    private Register fourBitRegister = new Register(4, null);
+    private Register twelveBitRegister = new Register(12, null);
 
     @Test
     public void testFourBitRegister() {

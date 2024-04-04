@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.val;
 
-public class Instruction {
+public class AssemblyInstruction {
 
     @Getter
     private String label;
@@ -16,11 +16,11 @@ public class Instruction {
     private String operandSymbol;
     private String[] operands;
 
-    public Instruction(String instruction) {
+    public AssemblyInstruction(String instruction) {
         instruction = instruction.split(";")[0]; // remove comments
-        val tokens = Arrays.stream(instruction.split(" ")).filter(s -> s.length() > 0).collect(Collectors.toList());
+        val tokens = Arrays.stream(instruction.split(" ")).filter(s -> !s.isEmpty()).collect(Collectors.toList());
 
-        if (tokens.size() == 0 // token count too low
+        if (tokens.isEmpty() // token count too low
                 || tokens.size() > 3 // token count too high
                 || (!tokens.get(0).endsWith(":") && tokens.size() > 2)) // token count too high for unlabeled
                                                                         // instructions
@@ -68,11 +68,11 @@ public class Instruction {
     }
 
     public boolean hasLabel() {
-        return this.label != null && this.label.length() > 0;
+        return this.label != null && !this.label.isEmpty();
     }
 
     public boolean operandSymbol() {
-        return this.operandSymbol != null && this.operandSymbol.length() > 0;
+        return this.operandSymbol != null && !this.operandSymbol.isEmpty();
     }
 
     public Integer getOperand(int operand) {

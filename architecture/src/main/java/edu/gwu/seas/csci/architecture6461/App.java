@@ -14,13 +14,15 @@ public final class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+        System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tc] %3$-20s  %4$s: %5$s %6$s%n");
+        stage.setTitle("Architecture 6461 Assembler/Simulator");
         Scene appScene = new Scene(new AssemblerView(), 1280, 960);
         stage.setScene(appScene);
         stage.show();
     }
 
-    public static void main(String[] args) {
-        System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tc] %4$s: %5$s %6$s%n");
+    public static void entry() {
+        System.setProperty("java.util.logging.SimpleFormatter.format","[%1$tc] %3$-20s  %4$s: %5$s %6$s%n");
         launch();
     }
 }

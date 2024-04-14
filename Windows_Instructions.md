@@ -9,6 +9,7 @@
 
 ## To Build:
 
+ - You may use the `run.ps1` script from the console, which will build and run the application.
  - The same build command listed in the readme applies for windows, given the above prerequisites. Run `mvn -f architecture\\pom.xml clean compile package` from the root directory of this repo.
 
 ## To Run:

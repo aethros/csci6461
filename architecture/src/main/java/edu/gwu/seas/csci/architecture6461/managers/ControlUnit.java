@@ -20,6 +20,8 @@ public final class ControlUnit {
     private static final Logger LOGGER = Logger.getLogger("ControlUnit");
     private static final String LOG_JUMP = "Jumped to memory address {0}.";
     private static final String DEVICE_ERROR = "DeviceID not recognized for I/O: {0}.";
+    private static volatile Character key;
+    private static volatile Integer code;
 
     @Getter
     private MemoryInterface memoryInterface = MemoryInterface.getInstance();
@@ -225,17 +227,18 @@ public final class ControlUnit {
         Register register = this.getGpRegister(instruction, Operand.R);
         int deviceId = instruction.getAddress();
         if (deviceId == 0) {
-            final Integer[] status = new Integer[1];
             if (this.checkStatus != null) {
-                CompletableFuture.runAsync(() -> status[0] = this.checkStatus.invoke());
-            }
-            else {
+                CompletableFuture.runAsync(() ->
+                    ControlUnit.code = this.checkStatus.invoke())
+                .thenRun(() -> {
+                    LOGGER.log(Level.INFO, String.format("Checked status of device %d and received status: %d.", deviceId, ControlUnit.code));
+                    register.setValue(ControlUnit.code);
+                });
+            } else {
                 LOGGER.severe("No check status method provided.");
             }
-            LOGGER.log(Level.INFO, String.format("Checked status of device %d and received status: %d.", deviceId, status[0]));
-            register.setValue(status[0]);
         } else {
-            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+            LOGGER.log(Level.SEVERE, DEVICE_ERROR, deviceId);
         }
     }
 
@@ -252,7 +255,7 @@ public final class ControlUnit {
                 LOGGER.severe("No send output method provided.");
             }
         } else {
-            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+            LOGGER.log(Level.SEVERE, DEVICE_ERROR, deviceId);
         }
     }
 
@@ -260,17 +263,18 @@ public final class ControlUnit {
         Register register = this.getGpRegister(instruction, Operand.R);
         int deviceId = instruction.getAddress();
         if (deviceId == 0) {
-            final Character[] key = new Character[1]; 
-            if (this.checkStatus != null) {
-                CompletableFuture.runAsync(() -> key[0] = this.getInput.invoke());
-            }
-            else {
+            if (this.getInput != null) {
+                CompletableFuture.runAsync(() ->
+                    ControlUnit.key = this.getInput.invoke())
+                .thenRun(() -> {
+                    LOGGER.log(Level.INFO, "Received input: {0}", ControlUnit.key);
+                    register.setValue(ControlUnit.key);
+                });
+            } else {
                 LOGGER.severe("No get input method provided.");
             }
-            LOGGER.log(Level.INFO, "Received input: {0}", key[0]);
-            register.setValue(key[0]);
         } else {
-            LOGGER.log(Level.INFO, DEVICE_ERROR, deviceId);
+            LOGGER.log(Level.SEVERE, DEVICE_ERROR, deviceId);
         }
     }
 
@@ -282,16 +286,19 @@ public final class ControlUnit {
         int value = r.getValue();
         if (logicalRotate) {
             if (left > 0) {
-                // TODO: Left rotate logical
-
+                value = (value << count) | (value >>> (16 - count));
             } else {
-                // TODO: Right rotate logical
+                value = (value >>> count) | (value << (16 - count));
             }
         } else {
             if (left > 0) {
-                // TODO: Left rotate arithmetic
+                int signBit = (value & 0x8000) >> 15;
+                value = (value << count) | (value >>> (16 - count));
+                value = value | (signBit << (16 - count));
             } else {
-                // TODO: Right rotate arithmetic
+                int signBit = (value & 0x8000) >> 15;
+                value = (value >>> count) | (value << (16 - count));
+                value = value | (signBit << count);
             }
         }
         r.setValue(value);
@@ -306,15 +313,17 @@ public final class ControlUnit {
         int value = r.getValue();
         if (logicalShift) {
             if (left > 0) {
-                // TODO: Left shift logical
+                value <<= count;
             } else {
-                // TODO: Right shift logical
+                value >>>= count;
             }
         } else {
             if (left > 0) {
-                // TODO: Left shift arithmetic
+                value >>= count;
             } else {
-                // TODO: Right shift arithmetic
+                int signBit = (value & 0x8000) >> 15;
+                value >>= count;
+                value = value | (signBit << (16 - count));
             }
         }
         r.setValue(value);
